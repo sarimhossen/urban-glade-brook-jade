@@ -104,13 +104,49 @@ export function isMainModule(moduleUrl) {
   }
 }
 
+/** Parse key=value lines from a .env file (skips comments/blank lines). */
+export function parseDotEnv(text) {
+  const env = {};
+  for (const rawLine of String(text).split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("#")) continue;
+    const eq = line.indexOf("=");
+    if (eq <= 0) continue;
+    const key = line.slice(0, eq).trim();
+    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) continue;
+    let value = line.slice(eq + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    env[key] = value;
+  }
+  return env;
+}
+
+/** Read `.env` and `.env.local` under `root` (`.env.local` overrides `.env`). */
+export function readDotEnv(root) {
+  const env = {};
+  for (const file of [".env", ".env.local"]) {
+    try {
+      Object.assign(env, parseDotEnv(readFileSync(join(root, file), "utf8")));
+    } catch {
+      // Missing env file is normal when vars are injected by the host.
+    }
+  }
+  return env;
+}
+
 function main(argv) {
   const [command, ...args] = argv;
   if (!command) {
     console.error("usage: node scripts/with-app-env.mjs <command> [args…]");
     process.exit(2);
   }
-  const env = mergeAppEnv(readAppEnv(projectRoot()), process.env);
+  const root = projectRoot();
+  const env = { ...readDotEnv(root), ...readAppEnv(root), ...process.env };
   const child = spawn(command, args, { stdio: "inherit", env });
   // The dev server is long-running and is stopped by signalling this wrapper.
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {

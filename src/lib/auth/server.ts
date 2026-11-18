@@ -95,35 +95,54 @@ const explicitBaseURL = env("BETTER_AUTH_URL");
 // Explicit `string[]` (not a readonly tuple) — Better Auth's DynamicBaseURLConfig
 // requires a mutable `allowedHosts: string[]`.
 const previewAllowedHosts: string[] = [...PREVIEW_ALLOWED_HOSTS];
-// Local `npm run dev` (port 8080 contract). Browsers may send Origin as any of
+// Local `npm run dev` (port 3000 contract). Browsers may send Origin as any of
 // these for the same server — trusting only `localhost` rejects `127.0.0.1` and
 // breaks email/password with "Invalid origin".
 const LOCAL_DEV_ORIGINS: string[] = [
-  "http://localhost:8080",
-  "http://127.0.0.1:8080",
-  "http://[::1]:8080",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "http://[::1]:3000",
+];
+const RUN_APP_HOST = "*.run.app";
+const DEPLOY_HOSTS: string[] = [
+  "*.vercel.app",
+  "sarim.work.gd",
+  "*.sarim.work.gd",
+  ...(env("VERCEL_URL") ? [env("VERCEL_URL") as string] : []),
+  ...(env("VERCEL_PROJECT_PRODUCTION_URL") ? [env("VERCEL_PROJECT_PRODUCTION_URL") as string] : []),
+];
+const allAllowedHosts: string[] = [
+  ...previewAllowedHosts,
+  RUN_APP_HOST,
+  ...DEPLOY_HOSTS,
+  "localhost",
+  "127.0.0.1",
+  "[::1]",
 ];
 const baseURL = explicitBaseURL ?? {
-  // Include loopback hosts so dynamic baseURL resolves for local email/password
-  // (not only the preview wildcard).
-  allowedHosts: [...previewAllowedHosts, "localhost", "127.0.0.1", "[::1]"],
+  // Include loopback, preview, and deployment hosts so dynamic baseURL resolves cleanly.
+  allowedHosts: allAllowedHosts,
   // `auto` → trust both http:// and https:// expansions of allowedHosts
   // (preview is https; local dev is http).
   protocol: "auto" as const,
-  fallback: "http://localhost:8080",
+  fallback: "http://localhost:3000",
 };
 
 // Origins Better Auth accepts on credentialed POSTs (sign-up/sign-in, etc.).
 // Missing entries here surface as FORBIDDEN "Invalid origin".
+const dynamicTrustedOrigins: string[] = [
+  ...previewAllowedHosts,
+  RUN_APP_HOST,
+  ...DEPLOY_HOSTS,
+  ...previewAllowedHosts.flatMap((host) => [`https://${host}`, `http://${host}`]),
+  `https://${RUN_APP_HOST}`,
+  `http://${RUN_APP_HOST}`,
+  ...DEPLOY_HOSTS.flatMap((host) => [`https://${host}`, `http://${host}`]),
+  ...LOCAL_DEV_ORIGINS,
+];
 const trustedOrigins: string[] = explicitBaseURL
-  ? [explicitBaseURL, ...LOCAL_DEV_ORIGINS]
-  : [
-      // Host wildcards (matched against Origin's host)
-      ...previewAllowedHosts,
-      // Full-origin wildcards (matched against Origin)
-      ...previewAllowedHosts.flatMap((host) => [`https://${host}`, `http://${host}`]),
-      ...LOCAL_DEV_ORIGINS,
-    ];
+  ? Array.from(new Set([explicitBaseURL, ...dynamicTrustedOrigins]))
+  : dynamicTrustedOrigins;
 
 const databaseUrl = env("DATABASE_URL");
 
@@ -222,7 +241,7 @@ export const auth = betterAuth({
   // `http://localhost`, so local dev still works.)
   advanced: {
     useSecureCookies: false,
-    defaultCookieAttributes: { secure: true, sameSite: "lax", path: "/" },
+    defaultCookieAttributes: { secure: true, sameSite: "none", path: "/" },
     cookies: {
       session_token: { name: SESSION_TOKEN_COOKIE },
       session_data: { name: "__Host-grok-auth.session_data" },

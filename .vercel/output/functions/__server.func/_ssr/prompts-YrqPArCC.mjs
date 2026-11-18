@@ -1,344 +1,12 @@
 import { o as __toESM } from "../_runtime.mjs";
-import { J as require_react, x as require_jsx_runtime, y as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { a as getServerFnById, i as TSS_SERVER_FUNCTION, n as createMiddleware, r as createServerFn } from "./ssr.mjs";
-import { i as signOut, t as authClient } from "./client-1vAx-gM_.mjs";
-import { t as authMiddleware } from "./middleware-BTnXpzi8.mjs";
-import { a as hasGateSessionMarker } from "./server-CWQvg8M4.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-CTg38IQf.js
+import { i as signOut, t as authClient } from "./client-BF-G9gzu.mjs";
+import { a as hasGateSessionMarker } from "./server-zx36BaT8.mjs";
+import { t as authMiddleware } from "./middleware-CnMzqvmO.mjs";
+import { Ut as require_react, x as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
+// node_modules/.nitro/vite/services/ssr/assets/prompts-YrqPArCC.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-function Clearing({ prompt, onPick }) {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-		className: "overflow-hidden rounded-card border border-ink/10 bg-card",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "relative",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
-				viewBox: "0 0 640 280",
-				className: "block h-auto w-full",
-				"aria-hidden": "true",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-						width: "640",
-						height: "280",
-						className: "fill-bg"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-						cx: "530",
-						cy: "64",
-						r: "36",
-						className: "fill-sap"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("ellipse", {
-						cx: "180",
-						cy: "250",
-						rx: "240",
-						ry: "80",
-						className: "fill-fern/25"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("ellipse", {
-						cx: "460",
-						cy: "268",
-						rx: "280",
-						ry: "96",
-						className: "fill-fern"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
-						d: "M250 280 C 280 230, 300 210, 340 168",
-						fill: "none",
-						className: "stroke-card",
-						strokeWidth: "16",
-						strokeLinecap: "round"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", {
-						transform: "translate(108 108)",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
-								d: "M48 62 L 18 128",
-								className: "stroke-ink",
-								strokeWidth: "4",
-								strokeLinecap: "round"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
-								d: "M48 62 L 86 128",
-								className: "stroke-ink",
-								strokeWidth: "4",
-								strokeLinecap: "round"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-								x: "12",
-								y: "8",
-								width: "74",
-								height: "56",
-								rx: "4",
-								className: "fill-card stroke-ink",
-								strokeWidth: "3"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
-								d: "M22 46 C 36 22, 52 36, 74 18",
-								fill: "none",
-								className: "stroke-fern",
-								strokeWidth: "3",
-								strokeLinecap: "round"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-								cx: "30",
-								cy: "22",
-								r: "4",
-								className: "fill-sap"
-							})
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", {
-						transform: "translate(430 96)",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-								x: "46",
-								y: "0",
-								width: "8",
-								height: "78",
-								rx: "3",
-								className: "fill-ink"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("ellipse", {
-								cx: "50",
-								cy: "104",
-								rx: "40",
-								ry: "30",
-								className: "fill-ink"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-								cx: "50",
-								cy: "104",
-								r: "10",
-								className: "fill-card"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
-								d: "M48 8 V 78",
-								className: "stroke-sap",
-								strokeWidth: "1.5"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
-								d: "M52 8 V 78",
-								className: "stroke-sap",
-								strokeWidth: "1.5"
-							})
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-						cx: "300",
-						cy: "78",
-						r: "8",
-						className: "fill-sap"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-						cx: "322",
-						cy: "64",
-						r: "5",
-						className: "fill-card"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-						cx: "286",
-						cy: "58",
-						r: "4",
-						className: "fill-fern"
-					})
-				]
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-				className: "absolute top-4 left-4 max-w-56 rounded-full bg-card/90 px-3 py-1 text-sm font-medium text-ink",
-				children: ["Today: ", prompt]
-			})]
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "grid gap-3 p-4 sm:grid-cols-3",
-			children: [
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Door, {
-					kicker: "Paint",
-					title: "Paint nook",
-					detail: "A canvas for your sister.",
-					tone: "sap",
-					onClick: () => onPick("paint")
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Door, {
-					kicker: "Guitar",
-					title: "String bench",
-					detail: "Six strings you can actually play.",
-					tone: "fern",
-					onClick: () => onPick("strings")
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Door, {
-					kicker: "Game",
-					title: "Splat run",
-					detail: "Catch drips with a guitar pick.",
-					tone: "quiet",
-					onClick: () => onPick("play")
-				})
-			]
-		})]
-	});
-}
-function Door({ kicker, title, detail, tone, onClick }) {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-		type: "button",
-		onClick,
-		className: `min-h-24 rounded-2xl px-4 py-3 text-left ${tone === "sap" ? "bg-sap text-ink" : tone === "fern" ? "bg-fern text-card" : "bg-bg text-ink"}`,
-		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-				className: "block text-xs font-semibold tracking-wide uppercase opacity-80",
-				children: kicker
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-				className: "mt-1 block font-display text-2xl leading-none",
-				children: title
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-				className: "mt-2 block text-sm opacity-80",
-				children: detail
-			})
-		]
-	});
-}
-var FREQS = [
-	82.41,
-	110,
-	146.83,
-	196,
-	246.94,
-	329.63
-];
-function playRiff(extra) {
-	let hits = [];
-	try {
-		const parsed = JSON.parse(extra);
-		if (!Array.isArray(parsed)) return;
-		hits = parsed;
-	} catch {
-		return;
-	}
-	const ctx = new AudioContext();
-	for (const hit of hits) {
-		const freq = FREQS[hit.i];
-		if (!freq) continue;
-		const osc = ctx.createOscillator();
-		const gain = ctx.createGain();
-		osc.type = "triangle";
-		osc.frequency.value = freq;
-		const when = ctx.currentTime + hit.t / 1e3;
-		gain.gain.setValueAtTime(1e-4, when);
-		gain.gain.exponentialRampToValueAtTime(.16, when + .02);
-		gain.gain.exponentialRampToValueAtTime(1e-4, when + .9);
-		osc.connect(gain).connect(ctx.destination);
-		osc.start(when);
-		osc.stop(when + 1);
-	}
-}
-function DiveBook({ dives, journal, pendingRemove, onRemove }) {
-	const [armed, setArmed] = (0, import_react.useState)(null);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-		className: "space-y-3",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "flex items-end justify-between gap-3",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-				className: "font-display text-3xl",
-				children: "The book"
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-				className: "text-sm text-ink/70",
-				children: dives.length === 0 ? "Nothing yet" : `${dives.length} dives`
-			})]
-		}), dives.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-			className: "rounded-card border border-ink/10 bg-card px-4 py-6 text-ink/80",
-			children: "The book is still blank. Paint something, pluck a string, or drop in a photo from today."
-		}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ol", {
-			className: "space-y-4 border-l-2 border-fern/30 pl-4",
-			children: dives.map((dive) => {
-				const who = dive.voice === "me" ? journal.myName : journal.sisterName;
-				return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
-					className: "rounded-card border border-ink/10 bg-card p-4",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex flex-wrap items-center gap-2",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: `rounded-full px-3 py-1 text-sm font-semibold ${dive.voice === "me" ? "bg-fern text-card" : "bg-sap text-ink"}`,
-									children: who
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "text-xs font-semibold tracking-wide text-ink/60 uppercase",
-									children: dive.kind
-								}),
-								!dive.shared && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "text-xs font-semibold text-ink/60",
-									children: "Only you"
-								})
-							]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-							className: "mt-2 font-display text-2xl",
-							children: dive.title
-						}),
-						dive.body && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "mt-1 text-ink/80",
-							children: dive.body
-						}),
-						dive.media && dive.kind === "video" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("video", {
-							className: "mt-3 w-full rounded-xl",
-							controls: true,
-							playsInline: true,
-							src: dive.media
-						}),
-						dive.media && (dive.kind === "photo" || dive.kind === "painting") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-							className: "mt-3 w-full rounded-xl",
-							alt: dive.title,
-							src: dive.media
-						}),
-						dive.media && dive.kind === "audio" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("audio", {
-							className: "mt-3 w-full",
-							controls: true,
-							src: dive.media
-						}),
-						dive.kind === "riff" && dive.extra && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							className: "btn btn-sap mt-3",
-							onClick: () => playRiff(dive.extra ?? ""),
-							children: "Play riff"
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "mt-3 flex flex-wrap items-center justify-between gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("time", {
-								className: "text-sm text-ink/60",
-								dateTime: dive.createdAt,
-								suppressHydrationWarning: true,
-								children: new Date(dive.createdAt).toLocaleString(void 0, {
-									month: "short",
-									day: "numeric",
-									hour: "numeric",
-									minute: "2-digit"
-								})
-							}), dive.mine && (armed === dive.id ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-								className: "flex gap-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "button",
-									className: "btn btn-quiet",
-									disabled: pendingRemove === dive.id,
-									onClick: () => onRemove(dive.id),
-									children: "Remove"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "button",
-									className: "btn btn-quiet",
-									onClick: () => setArmed(null),
-									children: "Keep"
-								})]
-							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								className: "text-sm font-semibold text-ink/70",
-								onClick: () => setArmed(dive.id),
-								children: "Remove"
-							}))]
-						})
-					]
-				}, dive.id);
-			})
-		})]
-	});
-}
 var PIGMENTS = [
 	"#14281c",
 	"#1f7a45",
@@ -563,10 +231,11 @@ async function prepareFile(file) {
 	}
 	throw new Error("Use a photo, an audio file, or a short video.");
 }
-function PostDock({ myName, sisterName, voice, onVoice, mode, busy, onClaim, onUnlock, onRename, onCreate }) {
+function PostDock({ myName, sisterName, allowGuestPosts, voice, onVoice, mode, busy, onClaim, onUnlock, onUpdateSettings, onCreate }) {
 	const [familyKey, setFamilyKey] = (0, import_react.useState)("");
 	const [mine, setMine] = (0, import_react.useState)(myName);
 	const [sis, setSis] = (0, import_react.useState)(sisterName);
+	const [guestAllowed, setGuestAllowed] = (0, import_react.useState)(allowGuestPosts);
 	const [title, setTitle] = (0, import_react.useState)("");
 	const [body, setBody] = (0, import_react.useState)("");
 	const [shared, setShared] = (0, import_react.useState)(true);
@@ -647,7 +316,8 @@ function PostDock({ myName, sisterName, voice, onVoice, mode, busy, onClaim, onU
 					onClaim({
 						familyKey,
 						myName: mine,
-						sisterName: sis
+						sisterName: sis,
+						allowGuestPosts: guestAllowed
 					}).catch((err) => {
 						setLocalError(err instanceof Error ? err.message : "Couldn't save the key.");
 					});
@@ -655,7 +325,7 @@ function PostDock({ myName, sisterName, voice, onVoice, mode, busy, onClaim, onU
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 						className: "text-sm text-ink/80",
-						children: "Pick a short secret you and your sister both know. Do this before you share the link. Visitors can watch. Only the key can post."
+						children: "Pick a short secret you and your sister both know. Do this before you share the link. Visitors can watch and comment; only the key lets you post as family."
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
 						className: "block text-sm font-semibold",
@@ -682,6 +352,14 @@ function PostDock({ myName, sisterName, voice, onVoice, mode, busy, onClaim, onU
 							value: familyKey,
 							onChange: (event) => setFamilyKey(event.target.value)
 						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+						className: "flex items-center gap-2 text-sm",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "checkbox",
+							checked: guestAllowed,
+							onChange: (event) => setGuestAllowed(event.target.checked)
+						}), "Also allow visitors to post on the post page"]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 						className: "btn btn-fern",
@@ -815,7 +493,7 @@ function PostDock({ myName, sisterName, voice, onVoice, mode, busy, onClaim, onU
 							type: "checkbox",
 							checked: shared,
 							onChange: (event) => setShared(event.target.checked)
-						}), "Visitors can watch this one"]
+						}), "Visitors can watch and comment on this one"]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 						className: "text-sm text-ink/70",
@@ -831,7 +509,7 @@ function PostDock({ myName, sisterName, voice, onVoice, mode, busy, onClaim, onU
 						className: "text-sm",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("summary", {
 							className: "cursor-pointer font-semibold",
-							children: "Our names"
+							children: "Names & visitor posting"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "mt-2 space-y-2",
 							children: [
@@ -847,20 +525,29 @@ function PostDock({ myName, sisterName, voice, onVoice, mode, busy, onClaim, onU
 									onChange: (event) => setSis(event.target.value),
 									"aria-label": "Sister's name"
 								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "flex items-center gap-2 text-sm",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "checkbox",
+										checked: guestAllowed,
+										onChange: (event) => setGuestAllowed(event.target.checked)
+									}), "Allow visitors to post on /post"]
+								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 									type: "button",
 									className: "btn btn-quiet",
 									disabled: busy,
 									onClick: () => {
 										setLocalError(null);
-										onRename({
+										onUpdateSettings({
 											myName: mine,
-											sisterName: sis
+											sisterName: sis,
+											allowGuestPosts: guestAllowed
 										}).catch((err) => {
-											setLocalError(err instanceof Error ? err.message : "Couldn't rename.");
+											setLocalError(err instanceof Error ? err.message : "Couldn't save settings.");
 										});
 									},
-									children: "Save names"
+									children: "Save settings"
 								})
 							]
 						})]
@@ -1403,18 +1090,21 @@ var createSsrRpc = (functionId) => {
 	});
 };
 var optionalAuth = createMiddleware({ type: "function" }).client(async ({ next }) => {
-	const { getBearerToken } = await import("./client-1vAx-gM_.mjs").then((n) => n.n);
+	const { getBearerToken } = await import("./client-BF-G9gzu.mjs").then((n) => n.n).then((n) => n.n);
 	return next({ sendContext: { bearerToken: getBearerToken() ?? void 0 } });
 }).server(async ({ next, context }) => {
-	const { getSessionUser } = await import("./verify.server-CHnc-QMx.mjs");
+	const { getSessionUser } = await import("./verify.server-ChIaMjGs.mjs");
 	return next({ context: { userId: (await getSessionUser(context.bearerToken))?.id ?? null } });
 });
 var getJournal = createServerFn({ method: "GET" }).handler(createSsrRpc("e82c2360d3b9e2a68b6cd566daed811df0847e0801e7aa853e828ac80de9f6fb"));
 var listDives = createServerFn({ method: "GET" }).middleware([optionalAuth]).handler(createSsrRpc("135d68d34606ddf2549bfc89f9bddf6abc75904db647617c10888e5e25ac4056"));
 var claimJournal = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator((input) => input).handler(createSsrRpc("b01d2dfac8f18ca68c6f26e2c10ab88d7ff837c94d4763cb8d15147afd2e5221"));
-var checkKey = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator((input) => input).handler(createSsrRpc("88866644aa23515aadac4a7ae978f8e47e267033a40fa42ca59498325ea4b74f"));
-var createDive = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator((input) => input).handler(createSsrRpc("8d3d3b997a058765dfc34f3de5740cebba35a271e12dcf0c0e443b184dcacf39"));
-var removeDive = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator((input) => input).handler(createSsrRpc("dd4e887a115efb99e5c85ffbbe12a8a797f61553c285322343af6a942be42ad4"));
+var updateJournalSettings = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("8a2b46fd8840f7c060a3c3e256a0fc56458456a6b21214ea7950403b5840cc11"));
+var checkKey = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("88866644aa23515aadac4a7ae978f8e47e267033a40fa42ca59498325ea4b74f"));
+var createDive = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("8d3d3b997a058765dfc34f3de5740cebba35a271e12dcf0c0e443b184dcacf39"));
+var removeDive = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("dd4e887a115efb99e5c85ffbbe12a8a797f61553c285322343af6a942be42ad4"));
+var addComment = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("d4305bc35c8ad691da55e882b5b3a8180da8757a5becdb43eaaeace951e86837"));
+var removeComment = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("c06e2babf521222499d2399b9835f95f3a5bc65560def47cfa1c8396d4d55545"));
 var PROMPTS = [
 	"Paint one color that feels like today.",
 	"Play three notes that sound like the weather.",
@@ -1430,313 +1120,4 @@ function promptFor(date) {
 	const day = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - start) / 864e5);
 	return PROMPTS[Math.abs(day) % PROMPTS.length] ?? PROMPTS[0];
 }
-var KEY = "daily-dive.familyKey";
-var VOICE_KEY = "daily-dive.voice";
-function textOf(err) {
-	return err instanceof Error && err.message ? err.message : "Something went wrong. Try again.";
-}
-function Home() {
-	const { user, isPending } = useCurrentUserState();
-	const [mode, setMode] = (0, import_react.useState)("clearing");
-	const [journal, setJournal] = (0, import_react.useState)(null);
-	const [dives, setDives] = (0, import_react.useState)(null);
-	const [familyKey, setFamilyKey] = (0, import_react.useState)(null);
-	const [voice, setVoice] = (0, import_react.useState)("me");
-	const [prompt, setPrompt] = (0, import_react.useState)("What did today feel like?");
-	const [busy, setBusy] = (0, import_react.useState)(false);
-	const [error, setError] = (0, import_react.useState)(null);
-	const [notice, setNotice] = (0, import_react.useState)(null);
-	const [pendingRemove, setPendingRemove] = (0, import_react.useState)(null);
-	const [loadError, setLoadError] = (0, import_react.useState)(null);
-	async function refresh() {
-		const [nextJournal, nextDives] = await Promise.all([getJournal(), listDives()]);
-		setJournal(nextJournal);
-		setDives(nextDives);
-		setLoadError(null);
-	}
-	(0, import_react.useEffect)(() => {
-		setPrompt(promptFor(/* @__PURE__ */ new Date()));
-		const storedVoice = localStorage.getItem(VOICE_KEY);
-		if (storedVoice === "me" || storedVoice === "sis") setVoice(storedVoice);
-		refresh().catch(() => setLoadError("The book couldn't open. Try again in a moment."));
-	}, []);
-	(0, import_react.useEffect)(() => {
-		if (!user || !journal?.ready) return;
-		const saved = localStorage.getItem(KEY);
-		if (!saved) return;
-		let cancel = false;
-		checkKey({ data: { familyKey: saved } }).then(() => {
-			if (!cancel) setFamilyKey(saved);
-		}).catch(() => {
-			localStorage.removeItem(KEY);
-			if (!cancel) setFamilyKey(null);
-		});
-		return () => {
-			cancel = true;
-		};
-	}, [user?.id, journal?.ready]);
-	function rememberKey(next) {
-		localStorage.setItem(KEY, next);
-		setFamilyKey(next);
-	}
-	function pickVoice(next) {
-		setVoice(next);
-		localStorage.setItem(VOICE_KEY, next);
-	}
-	async function submit(input) {
-		if (!user) {
-			setError("Sign in to keep this in the book.");
-			return false;
-		}
-		if (!familyKey) {
-			setMode("clearing");
-			setError("Unlock posting with the family key first.");
-			return false;
-		}
-		setBusy(true);
-		setError(null);
-		setNotice(null);
-		try {
-			await createDive({ data: {
-				familyKey,
-				voice,
-				title: input.title,
-				body: input.body,
-				kind: input.kind,
-				media: input.media,
-				extra: input.extra,
-				shared: input.shared
-			} });
-			setNotice("Saved. It's in the book.");
-			setMode("clearing");
-			await refresh();
-			return true;
-		} catch (err) {
-			setError(textOf(err));
-			return false;
-		} finally {
-			setBusy(false);
-		}
-	}
-	const dockMode = !journal?.ready ? "setup" : familyKey ? "open" : "enter";
-	const canSave = Boolean(user && familyKey);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
-		className: "mx-auto w-full max-w-5xl px-4 py-5 sm:py-8",
-		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
-				className: "flex flex-wrap items-center justify-between gap-3",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "text-xs font-semibold tracking-wide text-ink/60 uppercase",
-					children: "A place for two"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-					className: "font-display text-4xl leading-none",
-					children: "Daily Dive"
-				})] }), isPending ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-10 w-28 animate-pulse rounded-full bg-ink/10" }) : user ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserButton, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-					to: "/login",
-					className: "btn btn-fern",
-					children: "Sign in to post"
-				})]
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-				className: "mt-3 max-w-xl text-ink/80",
-				children: "Paint, guitar, and whatever today was. You two can add from any phone. Everyone else can only watch."
-			}),
-			mode !== "clearing" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-				type: "button",
-				className: "btn btn-quiet mt-4",
-				onClick: () => setMode("clearing"),
-				children: "Back to the clearing"
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "mt-4",
-				children: [
-					mode === "clearing" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clearing, {
-						prompt,
-						onPick: setMode
-					}),
-					mode === "paint" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-						className: "rounded-card border border-ink/10 bg-card p-4",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-3xl",
-								children: "Paint nook"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-1 mb-3 text-sm text-ink/70",
-								children: prompt
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PaintNook, {
-								canSave,
-								busy,
-								onSave: (media) => void submit({
-									title: "A painting",
-									body: prompt,
-									kind: "painting",
-									media,
-									extra: null,
-									shared: true
-								})
-							})
-						]
-					}),
-					mode === "strings" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-						className: "rounded-card border border-ink/10 bg-card p-4",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-3xl",
-								children: "String bench"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-1 mb-3 text-sm text-ink/70",
-								children: "Open strings, like a guitar you don't have to tune."
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(StringBench, {
-								canSave,
-								busy,
-								onSave: (hits) => void submit({
-									title: "A little riff",
-									body: prompt,
-									kind: "riff",
-									media: null,
-									extra: JSON.stringify(hits),
-									shared: true
-								})
-							})
-						]
-					}),
-					mode === "play" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-						className: "rounded-card border border-ink/10 bg-card p-4",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-3xl",
-								children: "Splat run"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-1 mb-3 text-sm text-ink/70",
-								children: "Drag the pick, or use the buttons."
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SplatRun, {
-								canSave,
-								busy,
-								onSave: (score) => void submit({
-									title: `Splat run · ${score}`,
-									body: "Caught this many drips.",
-									kind: "note",
-									media: null,
-									extra: null,
-									shared: true
-								})
-							})
-						]
-					})
-				]
-			}),
-			(error || notice) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-				className: "mt-4 rounded-xl bg-sap px-4 py-3 text-sm font-medium text-ink",
-				role: "status",
-				children: error ?? notice
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]",
-				children: [isPending || !journal ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-40 animate-pulse rounded-card bg-ink/10" }) : user ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PostDock, {
-					myName: journal.myName,
-					sisterName: journal.sisterName,
-					voice,
-					onVoice: pickVoice,
-					mode: dockMode,
-					busy,
-					onClaim: async (input) => {
-						setBusy(true);
-						setError(null);
-						try {
-							const next = await claimJournal({ data: input });
-							rememberKey(input.familyKey.trim());
-							setJournal(next);
-							setNotice("Key saved on this device. You can post.");
-						} catch (err) {
-							setBusy(false);
-							throw err;
-						} finally {
-							setBusy(false);
-						}
-					},
-					onUnlock: async (key) => {
-						setBusy(true);
-						setError(null);
-						try {
-							await checkKey({ data: { familyKey: key } });
-							rememberKey(key.trim());
-							setNotice("Posting is unlocked on this device.");
-						} catch (err) {
-							setBusy(false);
-							throw err;
-						} finally {
-							setBusy(false);
-						}
-					},
-					onRename: async (names) => {
-						if (!familyKey) return;
-						setBusy(true);
-						try {
-							const next = await claimJournal({ data: {
-								familyKey,
-								myName: names.myName,
-								sisterName: names.sisterName
-							} });
-							setJournal(next);
-							setNotice("Names saved.");
-						} finally {
-							setBusy(false);
-						}
-					},
-					onCreate: (input) => submit({
-						...input,
-						extra: null
-					})
-				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-					className: "rounded-card border border-ink/10 bg-card p-4",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-							className: "font-display text-3xl",
-							children: "Watching"
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "mt-2 text-ink/80",
-							children: "You can play the paint nook, the strings, and splat run. Saving a dive needs a sign-in."
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-							to: "/login",
-							className: "btn btn-fern mt-4",
-							children: "Sign in to post"
-						})
-					]
-				}), loadError ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "rounded-card border border-ink/10 bg-card p-4",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: loadError }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-						type: "button",
-						className: "btn btn-quiet mt-3",
-						onClick: () => void refresh(),
-						children: "Try again"
-					})]
-				}) : dives && journal ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DiveBook, {
-					dives,
-					journal,
-					pendingRemove,
-					onRemove: (id) => {
-						if (!familyKey) {
-							setError("Unlock posting before removing a dive.");
-							return;
-						}
-						setPendingRemove(id);
-						removeDive({ data: {
-							id,
-							familyKey
-						} }).then(() => refresh()).catch((err) => setError(textOf(err))).finally(() => setPendingRemove(null));
-					}
-				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-40 animate-pulse rounded-card bg-ink/10" })]
-			})
-		]
-	});
-}
-//#endregion
-export { Home as component };
+export { updateJournalSettings as _, UserButton as a, checkKey as c, getJournal as d, listDives as f, removeDive as g, removeComment as h, StringBench as i, claimJournal as l, promptFor as m, PostDock as n, addComment as o, prepareFile as p, SplatRun as r, blobToDataUrl as s, PaintNook as t, createDive as u, useCurrentUserState as v };

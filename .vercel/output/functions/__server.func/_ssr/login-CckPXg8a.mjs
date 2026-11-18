@@ -1,8 +1,8 @@
 import { o as __toESM } from "../_runtime.mjs";
-import { J as require_react, x as require_jsx_runtime, y as Link } from "../_libs/@tanstack/react-router+[...].mjs";
-import { r as signIn, t as authClient } from "./client-1vAx-gM_.mjs";
-import { t as GROK_PROVIDERS } from "./server-CWQvg8M4.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/login-C9F3D2Wu.js
+import { r as signIn, t as authClient } from "./client-BF-G9gzu.mjs";
+import { t as GROK_PROVIDERS } from "./server-zx36BaT8.mjs";
+import { Ut as require_react, v as Link, x as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
+// node_modules/.nitro/vite/services/ssr/assets/login-CckPXg8a.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function Login() {
@@ -125,5 +125,4 @@ function Login() {
 		]
 	});
 }
-//#endregion
 export { Login as component };

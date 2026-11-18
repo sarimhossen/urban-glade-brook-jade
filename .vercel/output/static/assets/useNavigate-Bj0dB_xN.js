@@ -1,0 +1,1 @@
+import{i as e}from"./link-Bky1RWYy.js";import{i as t,t as n}from"./react-sySUN5R7.js";var r=t(n(),1);function i(t){let n=e();return r.useCallback(e=>n.navigate({...e,from:e.from??t?.from}),[t?.from,n])}export{i as t};

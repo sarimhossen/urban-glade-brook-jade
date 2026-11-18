@@ -9,12 +9,15 @@ import { StringBench } from "@/components/string-bench";
 import { UserButton } from "@/lib/auth/gates";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import {
+  addComment,
   checkKey,
   claimJournal,
   createDive,
   getJournal,
   listDives,
+  removeComment,
   removeDive,
+  updateJournalSettings,
   type Dive,
   type JournalInfo,
   type Kind,
@@ -62,7 +65,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    if (!user || !journal?.ready) return;
+    if (!journal?.ready) return;
     const saved = localStorage.getItem(KEY);
     if (!saved) return;
     let cancel = false;
@@ -77,7 +80,7 @@ function Home() {
     return () => {
       cancel = true;
     };
-  }, [user?.id, journal?.ready]);
+  }, [journal?.ready]);
 
   function rememberKey(next: string) {
     localStorage.setItem(KEY, next);
@@ -86,7 +89,9 @@ function Home() {
 
   function pickVoice(next: Voice) {
     setVoice(next);
-    localStorage.setItem(VOICE_KEY, next);
+    if (next === "me" || next === "sis") {
+      localStorage.setItem(VOICE_KEY, next);
+    }
   }
 
   async function submit(input: {
@@ -97,10 +102,6 @@ function Home() {
     extra: string | null;
     shared: boolean;
   }) {
-    if (!user) {
-      setError("Sign in to keep this in the book.");
-      return false;
-    }
     if (!familyKey) {
       setMode("clearing");
       setError("Unlock posting with the family key first.");
@@ -122,7 +123,7 @@ function Home() {
           shared: input.shared,
         },
       });
-      setNotice("Saved. It's in the book.");
+      setNotice("Saved. It's in the vlog.");
       setMode("clearing");
       await refresh();
       return true;
@@ -135,27 +136,34 @@ function Home() {
   }
 
   const dockMode = !journal?.ready ? "setup" : familyKey ? "open" : "enter";
-  const canSave = Boolean(user && familyKey);
+  const canSave = Boolean(familyKey);
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-5 sm:py-8">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold tracking-wide text-ink/60 uppercase">A place for two</p>
+          <p className="text-xs font-semibold tracking-wide text-ink/60 uppercase">Personal vlog for two</p>
           <h1 className="font-display text-4xl leading-none">Daily Dive</h1>
         </div>
-        {isPending ? (
-          <div className="h-10 w-28 animate-pulse rounded-full bg-ink/10" />
-        ) : user ? (
-          <UserButton />
-        ) : (
-          <Link to="/login" className="btn btn-fern">
-            Sign in to post
+        <div className="flex flex-wrap items-center gap-2">
+          <Link to="/post" className="btn btn-sap">
+            Post a dive
           </Link>
-        )}
+          {isPending ? (
+            <div className="h-10 w-28 animate-pulse rounded-full bg-ink/10" />
+          ) : user ? (
+            <UserButton />
+          ) : (
+            <Link to="/login" className="btn btn-fern">
+              Sign in
+            </Link>
+          )}
+        </div>
       </header>
-      <p className="mt-3 max-w-xl text-ink/80">
-        Paint, guitar, and whatever today was. You two can add from any phone. Everyone else can only watch.
+      <p className="mt-3 max-w-2xl text-ink/80">
+        {journal?.ready
+          ? `${journal.myName} & ${journal.sisterName}'s personal vlog — paintings, guitar, and daily moments. Visitors can watch, play, and leave a comment.`
+          : "My personal vlog with my sister — paintings, guitar, and whatever today was. Visitors can watch, play, and comment on any post."}
       </p>
 
       {mode !== "clearing" && (
@@ -237,10 +245,11 @@ function Home() {
       <div className="mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         {isPending || !journal ? (
           <div className="h-40 animate-pulse rounded-card bg-ink/10" />
-        ) : user ? (
+        ) : user || familyKey ? (
           <PostDock
             myName={journal.myName}
             sisterName={journal.sisterName}
+            allowGuestPosts={journal.allowGuestPosts}
             voice={voice}
             onVoice={pickVoice}
             mode={dockMode}
@@ -274,15 +283,15 @@ function Home() {
                 setBusy(false);
               }
             }}
-            onRename={async (names) => {
+            onUpdateSettings={async (settings) => {
               if (!familyKey) return;
               setBusy(true);
               try {
-                const next = await claimJournal({
-                  data: { familyKey, myName: names.myName, sisterName: names.sisterName },
+                const next = await updateJournalSettings({
+                  data: { familyKey, ...settings },
                 });
                 setJournal(next);
-                setNotice("Names saved.");
+                setNotice("Settings saved.");
               } finally {
                 setBusy(false);
               }
@@ -291,13 +300,21 @@ function Home() {
           />
         ) : (
           <section className="rounded-card border border-ink/10 bg-card p-4">
-            <h2 className="font-display text-3xl">Watching</h2>
+            <h2 className="font-display text-3xl">Visiting our vlog</h2>
             <p className="mt-2 text-ink/80">
-              You can play the paint nook, the strings, and splat run. Saving a dive needs a sign-in.
+              You can play the paint nook, the strings, and splat run, and leave comments on any post in the vlog book.
+              {journal.allowGuestPosts
+                ? " Visitor posts are also open right now on the post page!"
+                : " Only family can post new dives."}
             </p>
-            <Link to="/login" className="btn btn-fern mt-4">
-              Sign in to post
-            </Link>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link to="/post" className="btn btn-fern">
+                {journal.allowGuestPosts ? "Post on the vlog" : "Family post page"}
+              </Link>
+              <Link to="/login" className="btn btn-quiet">
+                Sign in
+              </Link>
+            </div>
           </section>
         )}
         {loadError ? (
@@ -311,6 +328,7 @@ function Home() {
           <DiveBook
             dives={dives}
             journal={journal}
+            canModerate={Boolean(familyKey)}
             pendingRemove={pendingRemove}
             onRemove={(id) => {
               if (!familyKey) {
@@ -322,6 +340,22 @@ function Home() {
                 .then(() => refresh())
                 .catch((err: unknown) => setError(textOf(err)))
                 .finally(() => setPendingRemove(null));
+            }}
+            onComment={async ({ diveId, authorName, body }) => {
+              await addComment({
+                data: {
+                  diveId,
+                  authorName,
+                  body,
+                  familyKey: familyKey ?? undefined,
+                },
+              });
+              await refresh();
+            }}
+            onRemoveComment={async (commentId) => {
+              if (!familyKey) return;
+              await removeComment({ data: { id: commentId, familyKey } });
+              await refresh();
             }}
           />
         ) : (

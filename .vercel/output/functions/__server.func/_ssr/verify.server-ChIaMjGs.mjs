@@ -1,6 +1,6 @@
 import { o as getRequest } from "./ssr.mjs";
-import { i as gateIdentityEnabled, n as auth, r as authConfigured } from "./server-CWQvg8M4.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/verify.server-CHnc-QMx.js
+import { i as gateIdentityEnabled, n as auth, r as authConfigured } from "./server-zx36BaT8.mjs";
+// node_modules/.nitro/vite/services/ssr/assets/verify.server-ChIaMjGs.js
 /**
 * Server-side session resolution (server-only).
 *
@@ -73,5 +73,4 @@ async function requireUserId(bearerToken) {
 	if (!user) throw new UnauthorizedError();
 	return user.id;
 }
-//#endregion
 export { getSessionUser, requireUserId };

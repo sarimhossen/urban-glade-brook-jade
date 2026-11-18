@@ -7,24 +7,26 @@ type Draft = { kind: Kind; media: string | null; label: string };
 export function PostDock({
   myName,
   sisterName,
+  allowGuestPosts,
   voice,
   onVoice,
   mode,
   busy,
   onClaim,
   onUnlock,
-  onRename,
+  onUpdateSettings,
   onCreate,
 }: {
   myName: string;
   sisterName: string;
+  allowGuestPosts: boolean;
   voice: Voice;
   onVoice: (voice: Voice) => void;
   mode: "setup" | "enter" | "open";
   busy: boolean;
-  onClaim: (input: { familyKey: string; myName: string; sisterName: string }) => Promise<void>;
+  onClaim: (input: { familyKey: string; myName: string; sisterName: string; allowGuestPosts: boolean }) => Promise<void>;
   onUnlock: (familyKey: string) => Promise<void>;
-  onRename: (input: { myName: string; sisterName: string }) => Promise<void>;
+  onUpdateSettings: (input: { myName: string; sisterName: string; allowGuestPosts: boolean }) => Promise<void>;
   onCreate: (input: {
     title: string;
     body: string;
@@ -36,6 +38,7 @@ export function PostDock({
   const [familyKey, setFamilyKey] = useState("");
   const [mine, setMine] = useState(myName);
   const [sis, setSis] = useState(sisterName);
+  const [guestAllowed, setGuestAllowed] = useState(allowGuestPosts);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [shared, setShared] = useState(true);
@@ -105,14 +108,16 @@ export function PostDock({
           onSubmit={(event) => {
             event.preventDefault();
             setLocalError(null);
-            void onClaim({ familyKey, myName: mine, sisterName: sis }).catch((err: unknown) => {
-              setLocalError(err instanceof Error ? err.message : "Couldn't save the key.");
-            });
+            void onClaim({ familyKey, myName: mine, sisterName: sis, allowGuestPosts: guestAllowed }).catch(
+              (err: unknown) => {
+                setLocalError(err instanceof Error ? err.message : "Couldn't save the key.");
+              },
+            );
           }}
         >
           <p className="text-sm text-ink/80">
-            Pick a short secret you and your sister both know. Do this before you share the link. Visitors can
-            watch. Only the key can post.
+            Pick a short secret you and your sister both know. Do this before you share the link. Visitors can watch
+            and comment; only the key lets you post as family.
           </p>
           <label className="block text-sm font-semibold">
             Your name
@@ -131,6 +136,14 @@ export function PostDock({
               value={familyKey}
               onChange={(event) => setFamilyKey(event.target.value)}
             />
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={guestAllowed}
+              onChange={(event) => setGuestAllowed(event.target.checked)}
+            />
+            Also allow visitors to post on the post page
           </label>
           <button className="btn btn-fern" type="submit" disabled={busy}>
             Save our key
@@ -247,14 +260,14 @@ export function PostDock({
           )}
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={shared} onChange={(event) => setShared(event.target.checked)} />
-            Visitors can watch this one
+            Visitors can watch and comment on this one
           </label>
           <p className="text-sm text-ink/70">Only post pictures you're okay with other people seeing.</p>
           <button className="btn btn-fern" type="submit" disabled={busy}>
             Post it
           </button>
           <details className="text-sm">
-            <summary className="cursor-pointer font-semibold">Our names</summary>
+            <summary className="cursor-pointer font-semibold">Names &amp; visitor posting</summary>
             <div className="mt-2 space-y-2">
               <input className="field" value={mine} onChange={(event) => setMine(event.target.value)} aria-label="Your name" />
               <input
@@ -263,18 +276,28 @@ export function PostDock({
                 onChange={(event) => setSis(event.target.value)}
                 aria-label="Sister's name"
               />
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={guestAllowed}
+                  onChange={(event) => setGuestAllowed(event.target.checked)}
+                />
+                Allow visitors to post on /post
+              </label>
               <button
                 type="button"
                 className="btn btn-quiet"
                 disabled={busy}
                 onClick={() => {
                   setLocalError(null);
-                  void onRename({ myName: mine, sisterName: sis }).catch((err: unknown) => {
-                    setLocalError(err instanceof Error ? err.message : "Couldn't rename.");
-                  });
+                  void onUpdateSettings({ myName: mine, sisterName: sis, allowGuestPosts: guestAllowed }).catch(
+                    (err: unknown) => {
+                      setLocalError(err instanceof Error ? err.message : "Couldn't save settings.");
+                    },
+                  );
                 }}
               >
-                Save names
+                Save settings
               </button>
             </div>
           </details>

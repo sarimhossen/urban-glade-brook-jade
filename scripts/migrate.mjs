@@ -17,8 +17,15 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import pg from "pg";
 import { pendingMigrations } from "./migration-plan.mjs";
+import { projectRoot, readDotEnv } from "./with-app-env.mjs";
 
-const databaseUrl = process.env.DATABASE_URL;
+const fileEnv = readDotEnv(projectRoot());
+const databaseUrl =
+  process.env.DATABASE_URL_UNPOOLED?.trim() ||
+  process.env.DATABASE_URL?.trim() ||
+  fileEnv.DATABASE_URL_UNPOOLED?.trim() ||
+  fileEnv.DATABASE_URL?.trim() ||
+  "";
 if (!databaseUrl) {
   console.log(
     "[migrate] DATABASE_URL not set — skipping (the PGLite fallback migrates itself).",

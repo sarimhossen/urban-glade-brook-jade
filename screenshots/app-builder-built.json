@@ -1,0 +1,41 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Daily Dive",
+      "hasCanvas": false,
+      "bodyTextLen": 562,
+      "bodyTextHash": "72fa2275ddee6c3a28bd0b5506791bf5ea51c01c7dedb54d16d6b614ddb5ad14",
+      "bodyTextPrefix": "A PLACE FOR TWO Daily Dive Sign in to post Paint, guitar, and wh",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Daily Dive",
+      "hasCanvas": false,
+      "bodyTextLen": 562,
+      "bodyTextHash": "72fa2275ddee6c3a28bd0b5506791bf5ea51c01c7dedb54d16d6b614ddb5ad14",
+      "bodyTextPrefix": "A PLACE FOR TWO Daily Dive Sign in to post Paint, guitar, and wh",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": true,
+  "baselineReasons": [
+    "desktop: body text changed (305 -> 562 chars, hash mismatch)",
+    "mobile: body text changed (305 -> 562 chars, hash mismatch)"
+  ]
+}

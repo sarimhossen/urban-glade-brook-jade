@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Daily Dive">
+  <rect width="32" height="32" rx="8" fill="#14281C"/>
+  <circle cx="16" cy="9.2" r="3.15" fill="#D7E56C"/>
+  <path fill="#E7F2E1" d="M16 13.1c3.6 3.3 6.5 6.5 6.5 9.5a6.5 6.5 0 0 1-13 0c0-3 2.9-6.2 6.5-9.5z"/>
+  <path d="M9.4 25.2c1.8 1.7 4.1 2.6 6.6 2.6s4.8-.9 6.6-2.6" fill="none" stroke="#1F7A45" stroke-width="2.3" stroke-linecap="round"/>
+</svg>

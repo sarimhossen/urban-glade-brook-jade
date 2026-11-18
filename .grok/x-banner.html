@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Daily Dive X banner</title>
+<style>
+  @font-face {
+    font-family: "Lilita";
+    src: url("fonts/LilitaOne-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1200px;
+    height: 264px;
+    overflow: hidden;
+    background: #14281C;
+  }
+  body { font-family: "Lilita", sans-serif; position: relative; }
+  svg.scene { position: absolute; inset: 0; width: 1200px; height: 264px; }
+  .lockup {
+    position: absolute;
+    left: 76px;
+    top: 30px;
+    z-index: 2;
+    text-align: left;
+  }
+  .daily, .dive {
+    color: #D7E56C;
+    -webkit-text-stroke: 8px #102016;
+    paint-order: stroke fill;
+    filter: drop-shadow(0 4px 0 #0a1610);
+  }
+  .daily {
+    font-size: 42px;
+    line-height: 1;
+    letter-spacing: 0.22em;
+  }
+  .dive {
+    margin-top: 0;
+    font-size: 104px;
+    line-height: 0.78;
+    letter-spacing: 0.08em;
+  }
+  .tag {
+    margin-top: 8px;
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: 0.26em;
+    color: #F7FBF4;
+    -webkit-text-stroke: 4px #102016;
+    paint-order: stroke fill;
+  }
+</style>
+</head>
+<body>
+<svg class="scene" viewBox="0 0 1200 264" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="wash" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#14281C"/>
+      <stop offset="42%" stop-color="#14281C"/>
+      <stop offset="100%" stop-color="#1B3A28"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="70%" cy="70%" r="50%">
+      <stop offset="0%" stop-color="#3d9a5c"/>
+      <stop offset="55%" stop-color="#1F7A45"/>
+      <stop offset="100%" stop-color="#143222"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="264" fill="url(#wash)"/>
+  <polygon points="760,0 860,0 980,264 700,264" fill="#E7F2E1" opacity="0.07"/>
+
+  <ellipse cx="980" cy="228" rx="280" ry="62" fill="#0e2218"/>
+  <ellipse cx="990" cy="214" rx="250" ry="48" fill="url(#pool)"/>
+  <ellipse cx="990" cy="202" rx="160" ry="22" fill="none" stroke="#E7F2E1" stroke-width="2.5" opacity="0.5"/>
+  <ellipse cx="1000" cy="214" rx="210" ry="36" fill="none" stroke="#D7E56C" stroke-width="2.5" opacity="0.5"/>
+
+  <g fill="#1F7A45" transform="translate(1110,18)">
+    <path d="M0 10 C 8 70, -4 140, 6 230" fill="none" stroke="#1F7A45" stroke-width="8" stroke-linecap="round"/>
+    <ellipse cx="-28" cy="58" rx="32" ry="12" transform="rotate(-32 -28 58)"/>
+    <ellipse cx="26" cy="96" rx="34" ry="12" transform="rotate(28 26 96)"/>
+    <ellipse cx="-30" cy="140" rx="36" ry="13" transform="rotate(-30 -30 140)"/>
+    <ellipse cx="24" cy="184" rx="32" ry="12" transform="rotate(24 24 184)"/>
+  </g>
+  <g fill="#1F7A45" opacity="0.9" transform="translate(18,24)">
+    <path d="M20 0 C 16 50, 22 110, 14 180" fill="none" stroke="#1F7A45" stroke-width="7" stroke-linecap="round"/>
+    <ellipse cx="46" cy="48" rx="26" ry="10" transform="rotate(30 46 48)"/>
+    <ellipse cx="-2" cy="86" rx="24" ry="9" transform="rotate(-28 -2 86)"/>
+  </g>
+
+  <g fill="#D7E56C">
+    <ellipse cx="760" cy="54" rx="13" ry="6" transform="rotate(-20 760 54)"/>
+    <ellipse cx="860" cy="92" rx="11" ry="5" transform="rotate(24 860 92)" opacity="0.85"/>
+    <ellipse cx="700" cy="120" rx="10" ry="5" transform="rotate(12 700 120)" opacity="0.7"/>
+  </g>
+
+  <g transform="translate(930,48)">
+    <path d="M-18 12 C -6 6, 6 6, 18 12" fill="none" stroke="#F7FBF4" stroke-width="5" stroke-linecap="round"/>
+    <circle cy="0" r="9" fill="#F7FBF4"/>
+    <rect x="-6" y="-3" width="12" height="5" rx="2.5" fill="#D7E56C"/>
+    <path d="M-6 10 Q 0 40 0 54 Q 0 40 6 10 Z" fill="#E7F2E1"/>
+    <path d="M-11 48 L 0 64 L 11 48 Z" fill="#1F7A45"/>
+  </g>
+
+  <rect width="1200" height="264" filter="url(#grain)" opacity="0.07"/>
+</svg>
+<div class="lockup">
+  <div class="daily">DAILY</div>
+  <div class="dive">DIVE</div>
+  <div class="tag">ONE POOL A DAY</div>
+</div>
+</body>
+</html>

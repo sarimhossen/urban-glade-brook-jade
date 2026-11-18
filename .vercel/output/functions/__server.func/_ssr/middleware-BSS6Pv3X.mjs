@@ -1,5 +1,5 @@
 import { n as createMiddleware } from "./ssr.mjs";
-// node_modules/.nitro/vite/services/ssr/assets/middleware-DPkJ3Cvf.js
+// node_modules/.nitro/vite/services/ssr/assets/middleware-BSS6Pv3X.js
 /**
 * Auth middleware for server functions — the standard way to get the caller's
 * verified user id. When deployed the session cookie is same-origin and rides
@@ -30,7 +30,7 @@ var authMiddleware = createMiddleware({ type: "function" }).client(async ({ next
 	return next({ sendContext: { bearerToken: getBearerToken() ?? void 0 } });
 }).server(async ({ next, context }) => {
 	const { assertSameSiteRequest } = await import("./isolation.server-z4c_3uw8.mjs");
-	const { requireUserId } = await import("./verify.server-DJhmQ9OP.mjs");
+	const { requireUserId } = await import("./verify.server-DJoJ8u3-.mjs");
 	assertSameSiteRequest();
 	return next({ context: { userId: await requireUserId(context.bearerToken) } });
 });

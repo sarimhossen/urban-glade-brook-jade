@@ -1,10 +1,10 @@
 import { o as __toESM } from "../_runtime.mjs";
 import { a as getServerFnById, i as TSS_SERVER_FUNCTION, n as createMiddleware, r as createServerFn } from "./ssr.mjs";
 import { i as signOut, t as authClient } from "./client-BF-G9gzu.mjs";
-import { a as hasGateSessionMarker } from "./server-Beou30t2.mjs";
-import { t as authMiddleware } from "./middleware-DPkJ3Cvf.mjs";
+import { a as hasGateSessionMarker } from "./server-jAP-ez_Y.mjs";
+import { t as authMiddleware } from "./middleware-BSS6Pv3X.mjs";
 import { Ut as require_react, x as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
-// node_modules/.nitro/vite/services/ssr/assets/prompts-JHiHJe9k.js
+// node_modules/.nitro/vite/services/ssr/assets/prompts-C4349b6y.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var PIGMENTS = [
@@ -1093,7 +1093,7 @@ var optionalAuth = createMiddleware({ type: "function" }).client(async ({ next }
 	const { getBearerToken } = await import("./client-BF-G9gzu.mjs").then((n) => n.n).then((n) => n.n);
 	return next({ sendContext: { bearerToken: getBearerToken() ?? void 0 } });
 }).server(async ({ next, context }) => {
-	const { getSessionUser } = await import("./verify.server-DJhmQ9OP.mjs");
+	const { getSessionUser } = await import("./verify.server-DJoJ8u3-.mjs");
 	return next({ context: { userId: (await getSessionUser(context.bearerToken))?.id ?? null } });
 });
 var getJournal = createServerFn({ method: "GET" }).handler(createSsrRpc("e82c2360d3b9e2a68b6cd566daed811df0847e0801e7aa853e828ac80de9f6fb"));

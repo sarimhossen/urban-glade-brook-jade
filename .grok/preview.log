@@ -6,80 +6,19 @@
  ╭────────── [Build Info] ─────────────╮
  │                                     │
  │  - Build Directory: .vercel/output  │
- │  - Date: 11/18/2026, 9:43:34 PM     │
+ │  - Date: 11/18/2026, 11:36:24 PM    │
  │  - Nitro Version: 3.0.260610-beta   │
  │  - Nitro Preset: vercel             │
  │                                     │
  ╰─────────────────────────────────────╯
 
   ➜  Local:   http://127.0.0.1:8081/
-[db] PGLite bootstrap failed: Error: ENOENT: no such file or directory, open '/workspace/.vercel/output/functions/__server.func/_libs/pglite.data'
-    at async open (node:internal/fs/promises:639:25)
-    at async Module.readFile (node:internal/fs/promises:1252:14)
-    at async Object.w$2 (file:///workspace/.vercel/output/functions/__server.func/_libs/electric-sql__pglite.mjs:114:16) {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/workspace/.vercel/output/functions/__server.func/_libs/pglite.data'
-}
-node:internal/process/promises:394
-    triggerUncaughtException(err, true /* fromPromise */);
-    ^
+(node:2294) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
 
-Error: ENOENT: no such file or directory, open '/workspace/.vercel/output/functions/__server.func/_libs/pglite.data'
-    at async open (node:internal/fs/promises:639:25)
-    at async Module.readFile (node:internal/fs/promises:1252:14)
-    at async Object.w$2 (file:///workspace/.vercel/output/functions/__server.func/_libs/electric-sql__pglite.mjs:114:16) {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/workspace/.vercel/output/functions/__server.func/_libs/pglite.data'
-}
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
 
-Node.js v22.23.3
-
-> preview
-> node scripts/with-app-env.mjs vite preview
-
-
- ╭────────── [Build Info] ─────────────╮
- │                                     │
- │  - Build Directory: .vercel/output  │
- │  - Date: 11/18/2026, 9:43:34 PM     │
- │  - Nitro Version: 3.0.260610-beta   │
- │  - Nitro Preset: vercel             │
- │                                     │
- ╰─────────────────────────────────────╯
-
-  ➜  Local:   http://127.0.0.1:8081/
-node:internal/fs/promises:639
-  return new FileHandle(await PromisePrototypeThen(
-                        ^
-
-Error: ENOENT: no such file or directory, open '/workspace/.vercel/output/functions/__server.func/_libs/initdb.wasm'
-    at async open (node:internal/fs/promises:639:25)
-    at async Module.readFile (node:internal/fs/promises:1252:14)
-    at async Object.b$2 (file:///workspace/.vercel/output/functions/__server.func/_libs/electric-sql__pglite.mjs:99:11) {
-  errno: -2,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: '/workspace/.vercel/output/functions/__server.func/_libs/initdb.wasm'
-}
-
-Node.js v22.23.3
-
-> preview
-> node scripts/with-app-env.mjs vite preview
-
-
- ╭────────── [Build Info] ─────────────╮
- │                                     │
- │  - Build Directory: .vercel/output  │
- │  - Date: 11/18/2026, 9:43:34 PM     │
- │  - Nitro Version: 3.0.260610-beta   │
- │  - Nitro Preset: vercel             │
- │                                     │
- ╰─────────────────────────────────────╯
-
-  ➜  Local:   http://127.0.0.1:8081/
-2026-11-18T21:45:42.324Z WARN [Better Auth]: Rate limiting could not determine a client IP and is falling back to a single shared per-path bucket. Ensure your runtime forwards a trusted client IP header, then set `advanced.ipAddress.ipAddressHeaders` or `advanced.ipAddress.trustedProxies` so the address can be resolved.
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)

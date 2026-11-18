@@ -1,4 +1,4 @@
-// node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-Cl-mj4Hy.js
+// node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v--QJ4kMs8.js
 var tsrStartManifest = () => ({ routes: {
 	__root__: {
 		filePath: "/app/applet/src/routes/__root.tsx",
@@ -6,10 +6,11 @@ var tsrStartManifest = () => ({ routes: {
 			"/",
 			"/login",
 			"/post",
+			"/api/health",
 			"/api/auth/$"
 		],
 		preloads: [
-			"/assets/index-Bb_cMQm9.js",
+			"/assets/index-CLiEFk-V.js",
 			"/assets/react-sySUN5R7.js",
 			"/assets/preload-helper-BEwvr0Dm.js",
 			"/assets/link-Bky1RWYy.js",
@@ -18,7 +19,7 @@ var tsrStartManifest = () => ({ routes: {
 		scripts: [{ attrs: {
 			type: "module",
 			async: !0,
-			src: "/assets/index-Bb_cMQm9.js"
+			src: "/assets/index-CLiEFk-V.js"
 		} }]
 	},
 	"/": {

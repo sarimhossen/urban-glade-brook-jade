@@ -1,10 +1,11 @@
 import { o as __toESM, r as __exportAll } from "../_runtime.mjs";
 import { L as string, N as number, P as object, R as union, j as literal } from "../_libs/@better-auth/core+[...].mjs";
-import { n as auth } from "./server-Beou30t2.mjs";
+import { i as getSql, t as dbSource } from "./db-OMgi1bGZ.mjs";
+import { n as auth } from "./server-jAP-ez_Y.mjs";
 import { Ut as require_react, _ as createRootRoute, b as useRouter, d as HeadContent, g as createFileRoute, h as lazyRouteComponent, m as Outlet, p as createRouter, u as Scripts, x as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as TriangleAlert } from "../_libs/lucide-react.mjs";
-// node_modules/.nitro/vite/services/ssr/assets/router-K0Xbagt9.js
-var router_K0Xbagt9_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
+// node_modules/.nitro/vite/services/ssr/assets/router-B3k0NA1_.js
+var router_B3k0NA1__exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var FALLBACK_MESSAGE = "An unexpected error occurred. Try reloading the page.";
@@ -332,9 +333,9 @@ function PreviewHostBridge() {
 	}, [router]);
 	return null;
 }
-var styles_default = "/assets/styles-CSVJtFtc.css";
+var styles_default = "/assets/styles-BdKEE7Fs.css";
 var APP_NAME = "Daily Dive";
-var Route$4 = createRootRoute({
+var Route$5 = createRootRoute({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
@@ -396,39 +397,79 @@ var Route$4 = createRootRoute({
 		] })]
 	})
 });
-var $$splitComponentImporter$2 = () => import("./routes-B3Lu-aiK.mjs");
-var Route$3 = createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter$2, "component") });
-var $$splitComponentImporter$1 = () => import("./login-Dy5g0zyi.mjs");
-var Route$2 = createFileRoute("/login")({ component: lazyRouteComponent($$splitComponentImporter$1, "component") });
-var $$splitComponentImporter = () => import("./post-0PgbaLFN.mjs");
-var Route$1 = createFileRoute("/post")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
+var $$splitComponentImporter$2 = () => import("./routes-CqbKtiiS.mjs");
+var Route$4 = createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter$2, "component") });
+var $$splitComponentImporter$1 = () => import("./login-Dx8SlKHN.mjs");
+var Route$3 = createFileRoute("/login")({ component: lazyRouteComponent($$splitComponentImporter$1, "component") });
+var $$splitComponentImporter = () => import("./post-BpVm24Uq.mjs");
+var Route$2 = createFileRoute("/post")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
+var Route$1 = createFileRoute("/api/health")({ server: { handlers: { GET: async () => {
+	const started = Date.now();
+	const envStatus = {
+		DATABASE_URL: Boolean(process.env.DATABASE_URL?.trim()),
+		DATABASE_URL_UNPOOLED: Boolean(process.env.DATABASE_URL_UNPOOLED?.trim()),
+		BETTER_AUTH_URL: Boolean(process.env.BETTER_AUTH_URL?.trim()),
+		BETTER_AUTH_SECRET: Boolean(process.env.BETTER_AUTH_SECRET?.trim()),
+		VITE_AUTH_ENABLED: process.env.VITE_AUTH_ENABLED ?? "true"
+	};
+	try {
+		const sql = await getSql();
+		const [ping, tables] = await Promise.all([sql`select 1 as ok`, sql`
+              select table_name
+              from information_schema.tables
+              where table_schema = 'public'
+              order by table_name
+            `]);
+		return Response.json({
+			ok: ping[0]?.ok === 1,
+			dbSource,
+			latencyMs: Date.now() - started,
+			tables: tables.map((t) => t.table_name),
+			env: envStatus
+		});
+	} catch (err) {
+		console.error("[/api/health] database check failed:", err);
+		return Response.json({
+			ok: false,
+			dbSource,
+			latencyMs: Date.now() - started,
+			env: envStatus,
+			error: err instanceof Error ? err.message : "Database check failed"
+		}, { status: 500 });
+	}
+} } } });
 var Route = createFileRoute("/api/auth/$")({ server: { handlers: {
 	GET: ({ request }) => auth.handler(request),
 	POST: ({ request }) => auth.handler(request)
 } } });
 var rootRouteChildren = {
-	IndexRoute: Route$3.update({
+	IndexRoute: Route$4.update({
 		id: "/",
 		path: "/",
-		getParentRoute: () => Route$4
+		getParentRoute: () => Route$5
 	}),
-	LoginRoute: Route$2.update({
+	LoginRoute: Route$3.update({
 		id: "/login",
 		path: "/login",
-		getParentRoute: () => Route$4
+		getParentRoute: () => Route$5
 	}),
-	PostRoute: Route$1.update({
+	PostRoute: Route$2.update({
 		id: "/post",
 		path: "/post",
-		getParentRoute: () => Route$4
+		getParentRoute: () => Route$5
+	}),
+	ApiHealthRoute: Route$1.update({
+		id: "/api/health",
+		path: "/api/health",
+		getParentRoute: () => Route$5
 	}),
 	ApiAuthSplatRoute: Route.update({
 		id: "/api/auth/$",
 		path: "/api/auth/$",
-		getParentRoute: () => Route$4
+		getParentRoute: () => Route$5
 	})
 };
-var routeTree = Route$4._addFileChildren(rootRouteChildren)._addFileTypes();
+var routeTree = Route$5._addFileChildren(rootRouteChildren)._addFileTypes();
 function getRouter() {
 	return createRouter({
 		routeTree,
@@ -436,4 +477,4 @@ function getRouter() {
 		defaultErrorComponent: AppErrorComponent
 	});
 }
-export { getRouter, router_K0Xbagt9_exports as t };
+export { getRouter, router_B3k0NA1__exports as t };

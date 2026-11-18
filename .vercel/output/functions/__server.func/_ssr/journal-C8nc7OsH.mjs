@@ -1,7 +1,7 @@
 import { i as TSS_SERVER_FUNCTION, n as createMiddleware, r as createServerFn } from "./ssr.mjs";
-import { r as getSql } from "./db-DlAxM0di.mjs";
-import { t as authMiddleware } from "./middleware-DPkJ3Cvf.mjs";
-// node_modules/.nitro/vite/services/ssr/assets/journal-C7jef3ku.js
+import { i as getSql } from "./db-OMgi1bGZ.mjs";
+import { t as authMiddleware } from "./middleware-BSS6Pv3X.mjs";
+// node_modules/.nitro/vite/services/ssr/assets/journal-C8nc7OsH.js
 var createServerRpc = (serverFnMeta, splitImportFn) => {
 	const url = "/_serverFn/" + serverFnMeta.id;
 	return Object.assign(splitImportFn, {
@@ -28,7 +28,7 @@ var optionalAuth = createMiddleware({ type: "function" }).client(async ({ next }
 	const { getBearerToken } = await import("./client-BF-G9gzu.mjs").then((n) => n.n).then((n) => n.n);
 	return next({ sendContext: { bearerToken: getBearerToken() ?? void 0 } });
 }).server(async ({ next, context }) => {
-	const { getSessionUser } = await import("./verify.server-DJhmQ9OP.mjs");
+	const { getSessionUser } = await import("./verify.server-DJoJ8u3-.mjs");
 	return next({ context: { userId: (await getSessionUser(context.bearerToken))?.id ?? null } });
 });
 function cleanName(value, fallback, max = 16) {

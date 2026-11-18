@@ -1,5 +1,5 @@
 import { a as getOrigin, c as isRequestLike, i as getHost, l as resolveBaseURL, n as PACKAGE_VERSION, o as getProtocol, r as getBaseURL, s as isDynamicBaseURLConfig, t as GENERIC_OAUTH_ERROR_CODES, u as wildcardMatch } from "./url-CtjE_NaK.mjs";
-import { n as getPglite, t as ensureDbReady } from "./db-B2lOQXPL.mjs";
+import { n as getPglite, t as ensureDbReady } from "./db-DlAxM0di.mjs";
 import { a as PostgresIntrospector, c as sql, i as PostgresAdapter, n as getKyselyDatabaseType, o as PostgresQueryCompiler, s as CompiledQuery, t as createKyselyAdapter } from "../_libs/@better-auth/kysely-adapter+[...].mjs";
 import { $t as initGetModelName, A as email, Bt as ATTR_CONTEXT, C as serializeSignedCookie, D as any, Dt as JWTExpired, F as optional, G as importJWK, Gt as ATTR_HTTP_ROUTE, H as base64Url, Ht as ATTR_OPERATION_ID, I as record, Jt as getCurrentAdapter, K as jwtVerify, Kt as safeJSONParse, L as string, M as looseObject, N as number, O as array, P as object, Qt as getBetterAuthVersion, S as serializeCookie, Sn as BASE_ERROR_CODES, U as decodeJwt, Ut as ATTR_DB_COLLECTION_NAME, Vt as ATTR_HOOK_TYPE, W as decodeProtectedHeader, Wt as ATTR_HTTP_RESPONSE_STATUS_CODE, Xt as runWithAdapter, Yt as queueAfterTransactionHook, Zt as runWithTransaction, _ as runWithRequestState, _n as isProduction, a as createAuthorizationURL, an as betterFetch, b as createRouter$1, bn as BetterAuthError, c as createRateLimitKey, cn as normalizePathname, d as deprecate, dn as shouldPublishLog, en as initGetFieldName, f as createAuthEndpoint, g as hasRequestState, gn as isDevelopment, h as defineRequestState, ht as encode, i as refreshAccessToken, k as boolean, l as findInvalidTrustedProxies, ln as createLogger, m as isAPIError, n as socialProviders, nn as createRandomStringGenerator, o as applyDefaultAccessTokenExpiry, p as createAuthMiddleware, pn as env, qt as getAuthTables, r as validateAuthorizationCode, s as isLoopbackHost, t as SocialProviderListEnum, tn as generateId, u as getIp, un as logger, v as getCurrentAuthContext, vn as isTest, w as filterOutputFields, x as toResponse, xn as kAPIErrorHeaderSymbol, y as runWithEndpointContext, yn as APIError, zt as createWithSpan } from "../_libs/@better-auth/core+[...].mjs";
 import { n as defu, t as createDefu } from "../_libs/defu.mjs";
@@ -11,7 +11,7 @@ import { a as utf8ToBytes, i as managedNonce, n as bytesToHex, r as hexToBytes, 
 import { n as string$1, t as boolean$1 } from "../_libs/zod.mjs";
 import { t as Pool } from "../_libs/pg.mjs";
 import { randomBytes } from "node:crypto";
-// node_modules/.nitro/vite/services/ssr/assets/server-zx36BaT8.js
+// node_modules/.nitro/vite/services/ssr/assets/server-Beou30t2.js
 function tryDecode$1(str) {
 	if (str.indexOf("%") === -1) return str;
 	try {
@@ -8950,7 +8950,12 @@ var issuerBase = grokIssuer.replace(/\/+$/, "");
 var grokAuthorizationUrl = `${issuerBase}/api/auth/oauth2/authorize`;
 var grokTokenUrl = `${issuerBase}/api/auth/oauth2/token`;
 var grokUserInfoUrl = `${issuerBase}/api/auth/oauth2/userinfo`;
-var database = databaseUrl ? new Pool({ connectionString: databaseUrl }) : {
+var database = databaseUrl ? new Pool({
+	connectionString: databaseUrl,
+	max: 3,
+	idleTimeoutMillis: 5e3,
+	connectionTimeoutMillis: 1e4
+}) : {
 	dialect: pgliteDialect(() => getPglite()),
 	type: "postgres"
 };

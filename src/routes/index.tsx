@@ -13,8 +13,7 @@ import {
   checkKey,
   claimJournal,
   createDive,
-  getJournal,
-  listDives,
+  getVlogFeed,
   removeComment,
   removeDive,
   updateJournalSettings,
@@ -51,9 +50,9 @@ function Home() {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   async function refresh() {
-    const [nextJournal, nextDives] = await Promise.all([getJournal(), listDives()]);
-    setJournal(nextJournal);
-    setDives(nextDives);
+    const feed = await getVlogFeed();
+    setJournal(feed.journal);
+    setDives(feed.dives);
     setLoadError(null);
   }
 

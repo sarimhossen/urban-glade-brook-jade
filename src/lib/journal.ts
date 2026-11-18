@@ -138,7 +138,7 @@ function okMedia(kind: Kind, media: string) {
   return false;
 }
 
-export const getJournal = createServerFn({ method: "GET" }).handler(async (): Promise<JournalInfo> => {
+async function fetchJournalInfo(): Promise<JournalInfo> {
   const journal = await readJournal();
   if (!journal) return { ready: false, myName: "Me", sisterName: "Sis", allowGuestPosts: false };
   return {
@@ -147,60 +147,75 @@ export const getJournal = createServerFn({ method: "GET" }).handler(async (): Pr
     sisterName: journal.sister_name,
     allowGuestPosts: isTruthyBool(journal.allow_guest_posts),
   };
+}
+
+async function fetchDives(userId: string | null): Promise<Dive[]> {
+  const sql = await getSql();
+  const [rows, commentRows] = await Promise.all([
+    sql<DiveRow>`
+      select id, user_id, voice, author_label, kind, title, body, media, extra, shared,
+        to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
+      from dives
+      order by created_at desc
+      limit 25
+    `,
+    sql<CommentRow>`
+      select id, dive_id, author_name, body, is_family,
+        to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
+      from comments
+      order by created_at asc
+      limit 250
+    `,
+  ]);
+
+  const commentsByDive = new Map<string, DiveComment[]>();
+  for (const c of commentRows) {
+    const list = commentsByDive.get(c.dive_id) ?? [];
+    list.push({
+      id: c.id,
+      diveId: c.dive_id,
+      authorName: c.author_name,
+      body: c.body,
+      isFamily: isTruthyBool(c.is_family),
+      createdAt: c.created_at,
+    });
+    commentsByDive.set(c.dive_id, list);
+  }
+
+  return rows
+    .filter((row) => isTruthyBool(row.shared) || (userId && row.user_id === userId))
+    .filter((row): row is DiveRow & { voice: Voice; kind: Kind } => VOICES.has(row.voice as Voice) && KINDS.has(row.kind as Kind))
+    .map((row) => ({
+      id: row.id,
+      voice: row.voice,
+      authorLabel: row.author_label,
+      kind: row.kind,
+      title: row.title,
+      body: row.body,
+      media: row.media,
+      extra: row.extra,
+      shared: isTruthyBool(row.shared),
+      createdAt: row.created_at,
+      mine: Boolean(userId && row.user_id === userId),
+      comments: commentsByDive.get(row.id) ?? [],
+    }));
+}
+
+export const getJournal = createServerFn({ method: "GET" }).handler(async (): Promise<JournalInfo> => {
+  return fetchJournalInfo();
 });
 
 export const listDives = createServerFn({ method: "GET" })
   .middleware([optionalAuth])
   .handler(async ({ context }): Promise<Dive[]> => {
-    const sql = await getSql();
-    const [rows, commentRows] = await Promise.all([
-      sql<DiveRow>`
-        select id, user_id, voice, author_label, kind, title, body, media, extra, shared,
-          to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
-        from dives
-        order by created_at desc
-        limit 40
-      `,
-      sql<CommentRow>`
-        select id, dive_id, author_name, body, is_family,
-          to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
-        from comments
-        order by created_at asc
-        limit 500
-      `,
-    ]);
+    return fetchDives(context.userId);
+  });
 
-    const commentsByDive = new Map<string, DiveComment[]>();
-    for (const c of commentRows) {
-      const list = commentsByDive.get(c.dive_id) ?? [];
-      list.push({
-        id: c.id,
-        diveId: c.dive_id,
-        authorName: c.author_name,
-        body: c.body,
-        isFamily: isTruthyBool(c.is_family),
-        createdAt: c.created_at,
-      });
-      commentsByDive.set(c.dive_id, list);
-    }
-
-    return rows
-      .filter((row) => isTruthyBool(row.shared) || (context.userId && row.user_id === context.userId))
-      .filter((row): row is DiveRow & { voice: Voice; kind: Kind } => VOICES.has(row.voice as Voice) && KINDS.has(row.kind as Kind))
-      .map((row) => ({
-        id: row.id,
-        voice: row.voice,
-        authorLabel: row.author_label,
-        kind: row.kind,
-        title: row.title,
-        body: row.body,
-        media: row.media,
-        extra: row.extra,
-        shared: isTruthyBool(row.shared),
-        createdAt: row.created_at,
-        mine: Boolean(context.userId && row.user_id === context.userId),
-        comments: commentsByDive.get(row.id) ?? [],
-      }));
+export const getVlogFeed = createServerFn({ method: "GET" })
+  .middleware([optionalAuth])
+  .handler(async ({ context }): Promise<{ journal: JournalInfo; dives: Dive[] }> => {
+    const [journal, dives] = await Promise.all([fetchJournalInfo(), fetchDives(context.userId)]);
+    return { journal, dives };
   });
 
 export const claimJournal = createServerFn({ method: "POST" })

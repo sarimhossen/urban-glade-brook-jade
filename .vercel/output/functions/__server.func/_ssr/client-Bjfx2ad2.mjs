@@ -5,8 +5,8 @@ import { Ut as require_react } from "../_libs/@tanstack/react-router+[...].mjs";
 import { in as toKebabCase, on as createFetch, rn as capitalizeFirstLetter, sn as isSafeUrlScheme } from "../_libs/@better-auth/core+[...].mjs";
 import { a as atom, i as onSet, n as STORE_UNMOUNT_DELAY, r as onMount, t as listenKeys } from "../_libs/nanostores.mjs";
 import { n as defu } from "../_libs/defu.mjs";
-// node_modules/.nitro/vite/services/ssr/assets/client-BF-G9gzu.js
-var client_BF_G9gzu_exports = /* @__PURE__ */ __exportAll({ n: () => client_exports });
+// node_modules/.nitro/vite/services/ssr/assets/client-Bjfx2ad2.js
+var client_Bjfx2ad2_exports = /* @__PURE__ */ __exportAll({ n: () => client_exports });
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var genericOAuthClient = () => {
 	return {
@@ -879,7 +879,13 @@ var client_exports = /* @__PURE__ */ __exportAll$1({ getBearerToken: () => getBe
 * leaves the bearer token in place, and `onRequest` keeps re-attaching it, so
 * the visitor stays signed in.
 */
+var ssrSafeBaseURL = typeof window === "undefined" ? (() => {
+	const raw = typeof process !== "undefined" ? process.env.BETTER_AUTH_URL?.trim().replace(/^["']|["']$/g, "") : void 0;
+	if (!raw) return "http://localhost:3000";
+	return (/^https?:\/\//i.test(raw) ? raw : `https://${raw}`).replace(/\/+$/, "");
+})() : void 0;
 var authClient = createAuthClient({
+	...ssrSafeBaseURL ? { baseURL: ssrSafeBaseURL } : {},
 	plugins: [genericOAuthClient()],
 	fetchOptions: { onRequest(ctx) {
 		const token = getBearerToken();
@@ -1033,4 +1039,4 @@ async function signOut(redirectTo = "/") {
 		}
 	});
 }
-export { signOut as i, client_BF_G9gzu_exports as n, signIn as r, authClient as t };
+export { signOut as i, client_Bjfx2ad2_exports as n, signIn as r, authClient as t };

@@ -1,7 +1,6 @@
 import { i as TSS_SERVER_FUNCTION, n as createMiddleware, r as createServerFn } from "./ssr.mjs";
-import { i as getSql } from "./db-OMgi1bGZ.mjs";
-import { t as authMiddleware } from "./middleware-BSS6Pv3X.mjs";
-// node_modules/.nitro/vite/services/ssr/assets/journal-C8nc7OsH.js
+import { a as getSql, t as authMiddleware } from "./middleware-CGXLX9m3.mjs";
+// node_modules/.nitro/vite/services/ssr/assets/journal-Dxwl1Sf9.js
 var createServerRpc = (serverFnMeta, splitImportFn) => {
 	const url = "/_serverFn/" + serverFnMeta.id;
 	return Object.assign(splitImportFn, {
@@ -25,10 +24,10 @@ var KINDS = /* @__PURE__ */ new Set([
 ]);
 var MAX_MEDIA = 14e5;
 var optionalAuth = createMiddleware({ type: "function" }).client(async ({ next }) => {
-	const { getBearerToken } = await import("./client-BF-G9gzu.mjs").then((n) => n.n).then((n) => n.n);
+	const { getBearerToken } = await import("./client-Bjfx2ad2.mjs").then((n) => n.n).then((n) => n.n);
 	return next({ sendContext: { bearerToken: getBearerToken() ?? void 0 } });
 }).server(async ({ next, context }) => {
-	const { getSessionUser } = await import("./verify.server-DJoJ8u3-.mjs");
+	const { getSessionUser } = await import("./verify.server-DBMwgunI.mjs");
 	return next({ context: { userId: (await getSessionUser(context.bearerToken))?.id ?? null } });
 });
 function cleanName(value, fallback, max = 16) {
@@ -57,7 +56,7 @@ async function keyMatches(pass, salt, hash) {
 }
 async function readJournal() {
 	return (await (await getSql())`
-    select pass_hash, pass_salt, my_name, sister_name, allow_guest_posts from journal where id = 1
+    select pass_hash, pass_salt, my_name, sister_name, allow_guest_posts, created_by from journal where id = 1
   `)[0] ?? null;
 }
 async function assertKey(pass) {
@@ -75,36 +74,44 @@ function okMedia(kind, media) {
 	if (kind === "video") return media.startsWith("data:video/");
 	return false;
 }
-async function fetchJournalInfo() {
+async function fetchJournalInfo(userId) {
 	const journal = await readJournal();
 	if (!journal) return {
 		ready: false,
 		myName: "Me",
 		sisterName: "Sis",
-		allowGuestPosts: false
+		allowGuestPosts: false,
+		isOwner: false
 	};
 	return {
 		ready: true,
 		myName: journal.my_name,
 		sisterName: journal.sister_name,
-		allowGuestPosts: isTruthyBool(journal.allow_guest_posts)
+		allowGuestPosts: isTruthyBool(journal.allow_guest_posts),
+		isOwner: Boolean(userId && journal.created_by === userId)
 	};
 }
 async function fetchDives(userId) {
 	const sql = await getSql();
-	const [rows, commentRows] = await Promise.all([sql`
-      select id, user_id, voice, author_label, kind, title, body, media, extra, shared,
+	const [rows, commentRows, tagRows] = await Promise.all([
+		sql`
+      select id, user_id, voice, author_label, kind, title, body, media, extra, shared, likes,
         to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
       from dives
       order by created_at desc
       limit 25
-    `, sql`
+    `,
+		sql`
       select id, dive_id, author_name, body, is_family,
         to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
       from comments
       order by created_at asc
       limit 250
-    `]);
+    `,
+		sql`
+      select id, dive_id, tag from tags
+    `
+	]);
 	const commentsByDive = /* @__PURE__ */ new Map();
 	for (const c of commentRows) {
 		const list = commentsByDive.get(c.dive_id) ?? [];
@@ -118,6 +125,12 @@ async function fetchDives(userId) {
 		});
 		commentsByDive.set(c.dive_id, list);
 	}
+	const tagsByDive = /* @__PURE__ */ new Map();
+	for (const t of tagRows) {
+		const list = tagsByDive.get(t.dive_id) ?? [];
+		list.push(t.tag);
+		tagsByDive.set(t.dive_id, list);
+	}
 	return rows.filter((row) => isTruthyBool(row.shared) || userId && row.user_id === userId).filter((row) => VOICES.has(row.voice) && KINDS.has(row.kind)).map((row) => ({
 		id: row.id,
 		voice: row.voice,
@@ -130,7 +143,9 @@ async function fetchDives(userId) {
 		shared: isTruthyBool(row.shared),
 		createdAt: row.created_at,
 		mine: Boolean(userId && row.user_id === userId),
-		comments: commentsByDive.get(row.id) ?? []
+		comments: commentsByDive.get(row.id) ?? [],
+		likes: Number(row.likes ?? 0),
+		tags: tagsByDive.get(row.id) ?? []
 	}));
 }
 var getJournal_createServerFn_handler = createServerRpc({
@@ -138,8 +153,66 @@ var getJournal_createServerFn_handler = createServerRpc({
 	name: "getJournal",
 	filename: "src/lib/journal.ts"
 }, (opts) => getJournal.__executeServer(opts));
-var getJournal = createServerFn({ method: "GET" }).handler(getJournal_createServerFn_handler, async () => {
-	return fetchJournalInfo();
+var getJournal = createServerFn({ method: "GET" }).middleware([optionalAuth]).handler(getJournal_createServerFn_handler, async ({ context }) => {
+	return fetchJournalInfo(context.userId);
+});
+var listPosts_createServerFn_handler = createServerRpc({
+	id: "d0a5f87e3d7cc9b630698a100633894cc6e971e70c7341fb6c45c2fbb2e994db",
+	name: "listPosts",
+	filename: "src/lib/journal.ts"
+}, (opts) => listPosts.__executeServer(opts));
+var listPosts = createServerFn({ method: "GET" }).middleware([optionalAuth]).handler(listPosts_createServerFn_handler, async ({ context }) => {
+	const sql = await getSql();
+	const [rows, commentRows, tagRows] = await Promise.all([
+		sql`
+        select id, user_id, voice, author_label, kind, title, body, shared, likes,
+          to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
+        from dives
+        order by created_at desc
+        limit 25
+      `,
+		sql`
+        select id, dive_id, author_name, body, is_family,
+          to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
+        from comments
+        order by created_at asc
+        limit 250
+      `,
+		sql`
+        select id, dive_id, tag from tags
+      `
+	]);
+	const commentsByDive = /* @__PURE__ */ new Map();
+	for (const c of commentRows) {
+		const list = commentsByDive.get(c.dive_id) ?? [];
+		list.push({
+			id: c.id,
+			diveId: c.dive_id,
+			authorName: c.author_name,
+			body: c.body,
+			isFamily: isTruthyBool(c.is_family),
+			createdAt: c.created_at
+		});
+		commentsByDive.set(c.dive_id, list);
+	}
+	const tagsByDive = /* @__PURE__ */ new Map();
+	for (const t of tagRows) {
+		const list = tagsByDive.get(t.dive_id) ?? [];
+		list.push(t.tag);
+		tagsByDive.set(t.dive_id, list);
+	}
+	return rows.filter((row) => isTruthyBool(row.shared) || context.userId && row.user_id === context.userId).filter((row) => VOICES.has(row.voice) && KINDS.has(row.kind)).map((row) => ({
+		id: row.id,
+		title: row.title,
+		content: row.body,
+		createdAt: row.created_at,
+		voice: row.voice,
+		authorLabel: row.author_label,
+		kind: row.kind,
+		likes: Number(row.likes ?? 0),
+		comments: commentsByDive.get(row.id) ?? [],
+		tags: tagsByDive.get(row.id) ?? []
+	}));
 });
 var listDives_createServerFn_handler = createServerRpc({
 	id: "135d68d34606ddf2549bfc89f9bddf6abc75904db647617c10888e5e25ac4056",
@@ -155,7 +228,7 @@ var getVlogFeed_createServerFn_handler = createServerRpc({
 	filename: "src/lib/journal.ts"
 }, (opts) => getVlogFeed.__executeServer(opts));
 var getVlogFeed = createServerFn({ method: "GET" }).middleware([optionalAuth]).handler(getVlogFeed_createServerFn_handler, async ({ context }) => {
-	const [journal, dives] = await Promise.all([fetchJournalInfo(), fetchDives(context.userId)]);
+	const [journal, dives] = await Promise.all([fetchJournalInfo(context.userId), fetchDives(context.userId)]);
 	return {
 		journal,
 		dives
@@ -189,7 +262,8 @@ var claimJournal = createServerFn({ method: "POST" }).middleware([authMiddleware
 			ready: true,
 			myName,
 			sisterName,
-			allowGuestPosts
+			allowGuestPosts,
+			isOwner: true
 		};
 	}
 	if (!await keyMatches(familyKey, existing.pass_salt, existing.pass_hash)) throw new Error("That key doesn't match.");
@@ -202,7 +276,8 @@ var claimJournal = createServerFn({ method: "POST" }).middleware([authMiddleware
 		ready: true,
 		myName,
 		sisterName,
-		allowGuestPosts
+		allowGuestPosts,
+		isOwner: existing.created_by === context.userId
 	};
 });
 var updateJournalSettings_createServerFn_handler = createServerRpc({
@@ -210,8 +285,8 @@ var updateJournalSettings_createServerFn_handler = createServerRpc({
 	name: "updateJournalSettings",
 	filename: "src/lib/journal.ts"
 }, (opts) => updateJournalSettings.__executeServer(opts));
-var updateJournalSettings = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(updateJournalSettings_createServerFn_handler, async ({ data }) => {
-	await assertKey(asKey(data.familyKey));
+var updateJournalSettings = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(updateJournalSettings_createServerFn_handler, async ({ data, context }) => {
+	const existing = await assertKey(asKey(data.familyKey));
 	const myName = cleanName(data.myName ?? "", "Me");
 	const sisterName = cleanName(data.sisterName ?? "", "Sis");
 	const allowGuestPosts = Boolean(data.allowGuestPosts);
@@ -224,7 +299,8 @@ var updateJournalSettings = createServerFn({ method: "POST" }).middleware([optio
 		ready: true,
 		myName,
 		sisterName,
-		allowGuestPosts
+		allowGuestPosts,
+		isOwner: Boolean(context.userId && existing.created_by === context.userId)
 	};
 });
 var checkKey_createServerFn_handler = createServerRpc({
@@ -291,6 +367,52 @@ var createDive = createServerFn({ method: "POST" }).middleware([optionalAuth]).v
     `;
 	return { id };
 });
+var createAuthorizedPost_createServerFn_handler = createServerRpc({
+	id: "9472411d6230af2f63704130cc1b52adaaa298471de40c682b9efc1b6f70648b",
+	name: "createAuthorizedPost",
+	filename: "src/lib/journal.ts"
+}, (opts) => createAuthorizedPost.__executeServer(opts));
+var createAuthorizedPost = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator((input) => input).handler(createAuthorizedPost_createServerFn_handler, async ({ data, context }) => {
+	if (data.voice !== "me" && data.voice !== "sis") throw new Error("Pick who this post is from.");
+	const journal = await readJournal();
+	if (!journal) throw new Error("Set your family key first.");
+	const isOwner = journal.created_by === context.userId;
+	const key = data.familyKey?.trim() ?? "";
+	const hasValidKey = key ? await keyMatches(key, journal.pass_salt, journal.pass_hash) : false;
+	if (!isOwner && !hasValidKey) throw new Error("Only authorized vlog owners or family key holders can publish posts.");
+	const title = (data.title ?? "").trim().slice(0, 120);
+	const body = (data.content ?? "").trim().slice(0, 2e3);
+	if (title.length < 2) throw new Error("Add a title (at least 2 characters).");
+	if (!body) throw new Error("Write some content for your post.");
+	const { randomUUID } = await import("node:crypto");
+	const id = randomUUID();
+	const sql = await getSql();
+	await sql`
+      insert into dives (id, user_id, voice, author_label, kind, title, body, media, extra, shared)
+      values (
+        ${id},
+        ${context.userId},
+        ${data.voice},
+        ${null},
+        ${"note"},
+        ${title},
+        ${body},
+        ${null},
+        ${null},
+        ${data.shared ?? true}
+      )
+    `;
+	const tagsList = (data.tags ?? "").toString().split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
+	for (const tag of tagsList) await sql`
+        insert into tags (id, dive_id, tag)
+        values (${randomUUID()}, ${id}, ${tag})
+      `;
+	return {
+		id,
+		title,
+		body
+	};
+});
 function normalizeRiff(extra) {
 	let parsed;
 	try {
@@ -325,6 +447,44 @@ var removeDive = createServerFn({ method: "POST" }).middleware([optionalAuth]).v
       delete from dives where id = ${data.id} returning id
     `).length) throw new Error("That dive couldn't be found.");
 	return { ok: true };
+});
+var likePost_createServerFn_handler = createServerRpc({
+	id: "6aba6890efff2bd02e208283ef6f209ac2e3133e759961ac4a2caf72079e0fb7",
+	name: "likePost",
+	filename: "src/lib/journal.ts"
+}, (opts) => likePost.__executeServer(opts));
+var likePost = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(likePost_createServerFn_handler, async ({ data }) => {
+	if (!data.id || typeof data.id !== "string") throw new Error("Missing post id.");
+	const rows = await (await getSql())`
+      update dives
+      set likes = likes + 1
+      where id = ${data.id}
+      returning id, likes
+    `;
+	if (!rows.length) throw new Error("That post couldn't be found.");
+	return {
+		ok: true,
+		likes: rows[0].likes
+	};
+});
+var deletePost_createServerFn_handler = createServerRpc({
+	id: "b3e014de302bfec110f1a51a55d57ae3fde11eff8124b75cafd0c74b15fb0bbf",
+	name: "deletePost",
+	filename: "src/lib/journal.ts"
+}, (opts) => deletePost.__executeServer(opts));
+var deletePost = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator((input) => input).handler(deletePost_createServerFn_handler, async ({ data, context }) => {
+	if (!data.id || typeof data.id !== "string") throw new Error("Missing post id.");
+	const journal = await readJournal();
+	if (!journal) throw new Error("Vlog is not initialized yet.");
+	if (journal.created_by !== context.userId) throw new Error("Only the site owner can delete posts.");
+	const rows = await (await getSql())`
+      delete from dives where id = ${data.id} returning id
+    `;
+	if (!rows.length) throw new Error("That post couldn't be found.");
+	return {
+		ok: true,
+		id: rows[0].id
+	};
 });
 var addComment_createServerFn_handler = createServerRpc({
 	id: "d4305bc35c8ad691da55e882b5b3a8180da8757a5becdb43eaaeace951e86837",
@@ -368,4 +528,4 @@ var removeComment = createServerFn({ method: "POST" }).middleware([optionalAuth]
     `).length) throw new Error("That comment couldn't be found.");
 	return { ok: true };
 });
-export { addComment_createServerFn_handler, checkKey_createServerFn_handler, claimJournal_createServerFn_handler, createDive_createServerFn_handler, getJournal_createServerFn_handler, getVlogFeed_createServerFn_handler, listDives_createServerFn_handler, removeComment_createServerFn_handler, removeDive_createServerFn_handler, updateJournalSettings_createServerFn_handler };
+export { addComment_createServerFn_handler, checkKey_createServerFn_handler, claimJournal_createServerFn_handler, createAuthorizedPost_createServerFn_handler, createDive_createServerFn_handler, deletePost_createServerFn_handler, getJournal_createServerFn_handler, getVlogFeed_createServerFn_handler, likePost_createServerFn_handler, listDives_createServerFn_handler, listPosts_createServerFn_handler, removeComment_createServerFn_handler, removeDive_createServerFn_handler, updateJournalSettings_createServerFn_handler };

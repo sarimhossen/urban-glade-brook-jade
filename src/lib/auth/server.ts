@@ -64,9 +64,9 @@ function previewAuthSecret(): string {
   return globalAuthRef.__grokAuthPreviewSecret__;
 }
 
-/** Read an env var, treating empty/whitespace as unset. */
+/** Read an env var, trimming whitespace/quotes and treating empty as unset. */
 const env = (key: string): string | undefined => {
-  const value = process.env[key]?.trim();
+  const value = process.env[key]?.trim().replace(/^["']|["']$/g, "");
   return value ? value : undefined;
 };
 
@@ -91,7 +91,13 @@ export const authConfigured =
 // it derives the origin per-request from the (proxied) host, validated against the
 // preview allowlist, which makes the OAuth `redirect_uri` the concrete preview URL
 // the broker's preview client accepts.
-const explicitBaseURL = env("BETTER_AUTH_URL");
+const rawExplicitBaseURL = env("BETTER_AUTH_URL");
+const explicitBaseURL = rawExplicitBaseURL
+  ? (/^https?:\/\//i.test(rawExplicitBaseURL)
+      ? rawExplicitBaseURL
+      : `https://${rawExplicitBaseURL}`
+    ).replace(/\/+$/, "")
+  : undefined;
 // Explicit `string[]` (not a readonly tuple) — Better Auth's DynamicBaseURLConfig
 // requires a mutable `allowedHosts: string[]`.
 const previewAllowedHosts: string[] = [...PREVIEW_ALLOWED_HOSTS];

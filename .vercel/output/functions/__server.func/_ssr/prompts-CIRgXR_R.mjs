@@ -1,10 +1,8 @@
 import { o as __toESM } from "../_runtime.mjs";
-import { a as getServerFnById, i as TSS_SERVER_FUNCTION, n as createMiddleware, r as createServerFn } from "./ssr.mjs";
-import { i as signOut, t as authClient } from "./client-BF-G9gzu.mjs";
-import { a as hasGateSessionMarker } from "./server-jAP-ez_Y.mjs";
-import { t as authMiddleware } from "./middleware-BSS6Pv3X.mjs";
+import { i as signOut, t as authClient } from "./client-Bjfx2ad2.mjs";
+import { a as hasGateSessionMarker } from "./server-BfTlBDHy.mjs";
 import { Ut as require_react, x as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
-// node_modules/.nitro/vite/services/ssr/assets/prompts-C4349b6y.js
+// node_modules/.nitro/vite/services/ssr/assets/prompts-CIRgXR_R.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var PIGMENTS = [
@@ -1077,35 +1075,6 @@ function UserButton() {
 		]
 	});
 }
-var createSsrRpc = (functionId) => {
-	const url = "/_serverFn/" + functionId;
-	const serverFnMeta = { id: functionId };
-	const fn = async (...args) => {
-		return (await getServerFnById(functionId, { origin: "server" }))(...args);
-	};
-	return Object.assign(fn, {
-		url,
-		serverFnMeta,
-		[TSS_SERVER_FUNCTION]: true
-	});
-};
-var optionalAuth = createMiddleware({ type: "function" }).client(async ({ next }) => {
-	const { getBearerToken } = await import("./client-BF-G9gzu.mjs").then((n) => n.n).then((n) => n.n);
-	return next({ sendContext: { bearerToken: getBearerToken() ?? void 0 } });
-}).server(async ({ next, context }) => {
-	const { getSessionUser } = await import("./verify.server-DJoJ8u3-.mjs");
-	return next({ context: { userId: (await getSessionUser(context.bearerToken))?.id ?? null } });
-});
-var getJournal = createServerFn({ method: "GET" }).handler(createSsrRpc("e82c2360d3b9e2a68b6cd566daed811df0847e0801e7aa853e828ac80de9f6fb"));
-createServerFn({ method: "GET" }).middleware([optionalAuth]).handler(createSsrRpc("135d68d34606ddf2549bfc89f9bddf6abc75904db647617c10888e5e25ac4056"));
-var getVlogFeed = createServerFn({ method: "GET" }).middleware([optionalAuth]).handler(createSsrRpc("cba6d29231659ff4fd8b5295360b79af4485edf7d6ecf98cf144a54a0bea2313"));
-var claimJournal = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator((input) => input).handler(createSsrRpc("b01d2dfac8f18ca68c6f26e2c10ab88d7ff837c94d4763cb8d15147afd2e5221"));
-var updateJournalSettings = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("8a2b46fd8840f7c060a3c3e256a0fc56458456a6b21214ea7950403b5840cc11"));
-var checkKey = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("88866644aa23515aadac4a7ae978f8e47e267033a40fa42ca59498325ea4b74f"));
-var createDive = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("8d3d3b997a058765dfc34f3de5740cebba35a271e12dcf0c0e443b184dcacf39"));
-var removeDive = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("dd4e887a115efb99e5c85ffbbe12a8a797f61553c285322343af6a942be42ad4"));
-var addComment = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("d4305bc35c8ad691da55e882b5b3a8180da8757a5becdb43eaaeace951e86837"));
-var removeComment = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("c06e2babf521222499d2399b9835f95f3a5bc65560def47cfa1c8396d4d55545"));
 var PROMPTS = [
 	"Paint one color that feels like today.",
 	"Play three notes that sound like the weather.",
@@ -1121,4 +1090,4 @@ function promptFor(date) {
 	const day = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - start) / 864e5);
 	return PROMPTS[Math.abs(day) % PROMPTS.length] ?? PROMPTS[0];
 }
-export { updateJournalSettings as _, UserButton as a, checkKey as c, getJournal as d, getVlogFeed as f, removeDive as g, removeComment as h, StringBench as i, claimJournal as l, promptFor as m, PostDock as n, addComment as o, prepareFile as p, SplatRun as r, blobToDataUrl as s, PaintNook as t, createDive as u, useCurrentUserState as v };
+export { UserButton as a, promptFor as c, StringBench as i, useCurrentUserState as l, PostDock as n, blobToDataUrl as o, SplatRun as r, prepareFile as s, PaintNook as t };

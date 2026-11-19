@@ -6,12 +6,16 @@ export const Route = createFileRoute("/api/health")({
     handlers: {
       GET: async () => {
         const started = Date.now();
+        const rawDbUrl = process.env.DATABASE_URL?.trim().replace(/^["']|["']$/g, "");
+        const rawUnpooledUrl = process.env.DATABASE_URL_UNPOOLED?.trim().replace(/^["']|["']$/g, "");
         const envStatus = {
-          DATABASE_URL: Boolean(process.env.DATABASE_URL?.trim()),
-          DATABASE_URL_UNPOOLED: Boolean(process.env.DATABASE_URL_UNPOOLED?.trim()),
+          DATABASE_URL: Boolean(rawDbUrl),
+          DATABASE_URL_UNPOOLED: Boolean(rawUnpooledUrl),
           BETTER_AUTH_URL: Boolean(process.env.BETTER_AUTH_URL?.trim()),
           BETTER_AUTH_SECRET: Boolean(process.env.BETTER_AUTH_SECRET?.trim()),
           VITE_AUTH_ENABLED: process.env.VITE_AUTH_ENABLED ?? "true",
+          NODE_ENV: process.env.NODE_ENV ?? "unknown",
+          VERCEL: Boolean(process.env.VERCEL),
         };
         try {
           const sql = await getSql();

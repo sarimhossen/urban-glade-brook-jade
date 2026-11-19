@@ -27,6 +27,8 @@ export type Dive = {
   createdAt: string;
   mine: boolean;
   comments: DiveComment[];
+  likes: number;
+  tags: string[];
 };
 
 export type JournalInfo = {
@@ -34,6 +36,7 @@ export type JournalInfo = {
   myName: string;
   sisterName: string;
   allowGuestPosts: boolean;
+  isOwner: boolean;
 };
 
 const VOICES = new Set<Voice>(["me", "sis", "guest"]);
@@ -46,6 +49,7 @@ type JournalRow = {
   my_name: string;
   sister_name: string;
   allow_guest_posts: boolean | string;
+  created_by: string;
 };
 
 type DiveRow = {
@@ -60,6 +64,7 @@ type DiveRow = {
   extra: string | null;
   shared: boolean | string;
   created_at: string;
+  likes: number;
 };
 
 type CommentRow = {
@@ -114,7 +119,7 @@ async function keyMatches(pass: string, salt: string, hash: string) {
 async function readJournal(): Promise<JournalRow | null> {
   const sql = await getSql();
   const rows = await sql<JournalRow>`
-    select pass_hash, pass_salt, my_name, sister_name, allow_guest_posts from journal where id = 1
+    select pass_hash, pass_salt, my_name, sister_name, allow_guest_posts, created_by from journal where id = 1
   `;
   return rows[0] ?? null;
 }
@@ -138,22 +143,25 @@ function okMedia(kind: Kind, media: string) {
   return false;
 }
 
-async function fetchJournalInfo(): Promise<JournalInfo> {
+async function fetchJournalInfo(userId: string | null): Promise<JournalInfo> {
   const journal = await readJournal();
-  if (!journal) return { ready: false, myName: "Me", sisterName: "Sis", allowGuestPosts: false };
+  if (!journal) {
+    return { ready: false, myName: "Me", sisterName: "Sis", allowGuestPosts: false, isOwner: false };
+  }
   return {
     ready: true,
     myName: journal.my_name,
     sisterName: journal.sister_name,
     allowGuestPosts: isTruthyBool(journal.allow_guest_posts),
+    isOwner: Boolean(userId && journal.created_by === userId),
   };
 }
 
 async function fetchDives(userId: string | null): Promise<Dive[]> {
   const sql = await getSql();
-  const [rows, commentRows] = await Promise.all([
+  const [rows, commentRows, tagRows] = await Promise.all([
     sql<DiveRow>`
-      select id, user_id, voice, author_label, kind, title, body, media, extra, shared,
+      select id, user_id, voice, author_label, kind, title, body, media, extra, shared, likes,
         to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
       from dives
       order by created_at desc
@@ -165,6 +173,9 @@ async function fetchDives(userId: string | null): Promise<Dive[]> {
       from comments
       order by created_at asc
       limit 250
+    `,
+    sql<{ id: string; dive_id: string; tag: string }>`
+      select id, dive_id, tag from tags
     `,
   ]);
 
@@ -180,6 +191,13 @@ async function fetchDives(userId: string | null): Promise<Dive[]> {
       createdAt: c.created_at,
     });
     commentsByDive.set(c.dive_id, list);
+  }
+
+  const tagsByDive = new Map<string, string[]>();
+  for (const t of tagRows) {
+    const list = tagsByDive.get(t.dive_id) ?? [];
+    list.push(t.tag);
+    tagsByDive.set(t.dive_id, list);
   }
 
   return rows
@@ -198,12 +216,105 @@ async function fetchDives(userId: string | null): Promise<Dive[]> {
       createdAt: row.created_at,
       mine: Boolean(userId && row.user_id === userId),
       comments: commentsByDive.get(row.id) ?? [],
+      likes: Number(row.likes ?? 0),
+      tags: tagsByDive.get(row.id) ?? [],
     }));
 }
 
-export const getJournal = createServerFn({ method: "GET" }).handler(async (): Promise<JournalInfo> => {
-  return fetchJournalInfo();
-});
+export const getJournal = createServerFn({ method: "GET" })
+  .middleware([optionalAuth])
+  .handler(async ({ context }): Promise<JournalInfo> => {
+    return fetchJournalInfo(context.userId);
+  });
+
+export type PostSummary = {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  voice: Voice;
+  authorLabel: string | null;
+  kind: Kind;
+  likes: number;
+  comments: DiveComment[];
+  tags: string[];
+};
+
+export const listPosts = createServerFn({ method: "GET" })
+  .middleware([optionalAuth])
+  .handler(async ({ context }): Promise<PostSummary[]> => {
+    const sql = await getSql();
+    const [rows, commentRows, tagRows] = await Promise.all([
+      sql<{
+        id: string;
+        user_id: string;
+        voice: string;
+        author_label: string | null;
+        kind: string;
+        title: string;
+        body: string;
+        shared: boolean | string;
+        created_at: string;
+        likes: number;
+      }>`
+        select id, user_id, voice, author_label, kind, title, body, shared, likes,
+          to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
+        from dives
+        order by created_at desc
+        limit 25
+      `,
+      sql<CommentRow>`
+        select id, dive_id, author_name, body, is_family,
+          to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at
+        from comments
+        order by created_at asc
+        limit 250
+      `,
+      sql<{ id: string; dive_id: string; tag: string }>`
+        select id, dive_id, tag from tags
+      `,
+    ]);
+
+    const commentsByDive = new Map<string, DiveComment[]>();
+    for (const c of commentRows) {
+      const list = commentsByDive.get(c.dive_id) ?? [];
+      list.push({
+        id: c.id,
+        diveId: c.dive_id,
+        authorName: c.author_name,
+        body: c.body,
+        isFamily: isTruthyBool(c.is_family),
+        createdAt: c.created_at,
+      });
+      commentsByDive.set(c.dive_id, list);
+    }
+
+    const tagsByDive = new Map<string, string[]>();
+    for (const t of tagRows) {
+      const list = tagsByDive.get(t.dive_id) ?? [];
+      list.push(t.tag);
+      tagsByDive.set(t.dive_id, list);
+    }
+
+    return rows
+      .filter((row) => isTruthyBool(row.shared) || (context.userId && row.user_id === context.userId))
+      .filter(
+        (row): row is typeof row & { voice: Voice; kind: Kind } =>
+          VOICES.has(row.voice as Voice) && KINDS.has(row.kind as Kind),
+      )
+      .map((row) => ({
+        id: row.id,
+        title: row.title,
+        content: row.body,
+        createdAt: row.created_at,
+        voice: row.voice,
+        authorLabel: row.author_label,
+        kind: row.kind,
+        likes: Number(row.likes ?? 0),
+        comments: commentsByDive.get(row.id) ?? [],
+        tags: tagsByDive.get(row.id) ?? [],
+      }));
+  });
 
 export const listDives = createServerFn({ method: "GET" })
   .middleware([optionalAuth])
@@ -214,14 +325,17 @@ export const listDives = createServerFn({ method: "GET" })
 export const getVlogFeed = createServerFn({ method: "GET" })
   .middleware([optionalAuth])
   .handler(async ({ context }): Promise<{ journal: JournalInfo; dives: Dive[] }> => {
-    const [journal, dives] = await Promise.all([fetchJournalInfo(), fetchDives(context.userId)]);
+    const [journal, dives] = await Promise.all([
+      fetchJournalInfo(context.userId),
+      fetchDives(context.userId),
+    ]);
     return { journal, dives };
   });
 
 export const claimJournal = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .validator((input: { familyKey: string; myName: string; sisterName: string; allowGuestPosts?: boolean }) => input)
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data, context }): Promise<JournalInfo> => {
     const familyKey = asKey(data.familyKey);
     const myName = cleanName(data.myName ?? "", "Me");
     const sisterName = cleanName(data.sisterName ?? "", "Sis");
@@ -241,7 +355,7 @@ export const claimJournal = createServerFn({ method: "POST" })
         const ok = await keyMatches(familyKey, again.pass_salt, again.pass_hash);
         if (!ok) throw new Error("Someone already set the family key.");
       }
-      return { ready: true, myName, sisterName, allowGuestPosts };
+      return { ready: true, myName, sisterName, allowGuestPosts, isOwner: true };
     }
     const ok = await keyMatches(familyKey, existing.pass_salt, existing.pass_hash);
     if (!ok) throw new Error("That key doesn't match.");
@@ -250,14 +364,20 @@ export const claimJournal = createServerFn({ method: "POST" })
       set my_name = ${myName}, sister_name = ${sisterName}, allow_guest_posts = ${allowGuestPosts}
       where id = 1
     `;
-    return { ready: true, myName, sisterName, allowGuestPosts };
+    return {
+      ready: true,
+      myName,
+      sisterName,
+      allowGuestPosts,
+      isOwner: existing.created_by === context.userId,
+    };
   });
 
 export const updateJournalSettings = createServerFn({ method: "POST" })
   .middleware([optionalAuth])
   .validator((input: { familyKey: string; myName: string; sisterName: string; allowGuestPosts: boolean }) => input)
-  .handler(async ({ data }) => {
-    await assertKey(asKey(data.familyKey));
+  .handler(async ({ data, context }): Promise<JournalInfo> => {
+    const existing = await assertKey(asKey(data.familyKey));
     const myName = cleanName(data.myName ?? "", "Me");
     const sisterName = cleanName(data.sisterName ?? "", "Sis");
     const allowGuestPosts = Boolean(data.allowGuestPosts);
@@ -267,7 +387,13 @@ export const updateJournalSettings = createServerFn({ method: "POST" })
       set my_name = ${myName}, sister_name = ${sisterName}, allow_guest_posts = ${allowGuestPosts}
       where id = 1
     `;
-    return { ready: true, myName, sisterName, allowGuestPosts };
+    return {
+      ready: true,
+      myName,
+      sisterName,
+      allowGuestPosts,
+      isOwner: Boolean(context.userId && existing.created_by === context.userId),
+    };
   });
 
 export const checkKey = createServerFn({ method: "POST" })
@@ -358,6 +484,71 @@ export const createDive = createServerFn({ method: "POST" })
     return { id };
   });
 
+export type CreateAuthorizedPostInput = {
+  familyKey?: string;
+  voice: "me" | "sis";
+  title: string;
+  content: string;
+  shared?: boolean;
+  tags?: string;
+};
+
+export const createAuthorizedPost = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((input: CreateAuthorizedPostInput) => input)
+  .handler(async ({ data, context }) => {
+    if (data.voice !== "me" && data.voice !== "sis") {
+      throw new Error("Pick who this post is from.");
+    }
+    const journal = await readJournal();
+    if (!journal) throw new Error("Set your family key first.");
+
+    const isOwner = journal.created_by === context.userId;
+    const key = data.familyKey?.trim() ?? "";
+    const hasValidKey = key ? await keyMatches(key, journal.pass_salt, journal.pass_hash) : false;
+    if (!isOwner && !hasValidKey) {
+      throw new Error("Only authorized vlog owners or family key holders can publish posts.");
+    }
+
+    const title = (data.title ?? "").trim().slice(0, 120);
+    const body = (data.content ?? "").trim().slice(0, 2000);
+    if (title.length < 2) throw new Error("Add a title (at least 2 characters).");
+    if (!body) throw new Error("Write some content for your post.");
+
+    const { randomUUID } = await import("node:crypto");
+    const id = randomUUID();
+    const sql = await getSql();
+    await sql`
+      insert into dives (id, user_id, voice, author_label, kind, title, body, media, extra, shared)
+      values (
+        ${id},
+        ${context.userId},
+        ${data.voice},
+        ${null},
+        ${"note"},
+        ${title},
+        ${body},
+        ${null},
+        ${null},
+        ${data.shared ?? true}
+      )
+    `;
+
+    const rawTags = (data.tags ?? "").toString();
+    const tagsList = rawTags
+      .split(",")
+      .map((t) => t.trim().toLowerCase())
+      .filter(Boolean);
+    for (const tag of tagsList) {
+      await sql`
+        insert into tags (id, dive_id, tag)
+        values (${randomUUID()}, ${id}, ${tag})
+      `;
+    }
+
+    return { id, title, body };
+  });
+
 function normalizeRiff(extra: string | null) {
   let parsed: unknown;
   try {
@@ -392,6 +583,50 @@ export const removeDive = createServerFn({ method: "POST" })
     `;
     if (!rows.length) throw new Error("That dive couldn't be found.");
     return { ok: true as const };
+  });
+
+export const likePost = createServerFn({ method: "POST" })
+  .middleware([optionalAuth])
+  .validator((input: { id: string }) => input)
+  .handler(async ({ data }) => {
+    if (!data.id || typeof data.id !== "string") {
+      throw new Error("Missing post id.");
+    }
+    const sql = await getSql();
+    const rows = await sql<{ id: string; likes: number }>`
+      update dives
+      set likes = likes + 1
+      where id = ${data.id}
+      returning id, likes
+    `;
+    if (!rows.length) {
+      throw new Error("That post couldn't be found.");
+    }
+    return { ok: true as const, likes: rows[0].likes };
+  });
+
+export const deletePost = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((input: { id: string }) => input)
+  .handler(async ({ data, context }) => {
+    if (!data.id || typeof data.id !== "string") {
+      throw new Error("Missing post id.");
+    }
+    const journal = await readJournal();
+    if (!journal) {
+      throw new Error("Vlog is not initialized yet.");
+    }
+    if (journal.created_by !== context.userId) {
+      throw new Error("Only the site owner can delete posts.");
+    }
+    const sql = await getSql();
+    const rows = await sql<{ id: string }>`
+      delete from dives where id = ${data.id} returning id
+    `;
+    if (!rows.length) {
+      throw new Error("That post couldn't be found.");
+    }
+    return { ok: true as const, id: rows[0].id };
   });
 
 export const addComment = createServerFn({ method: "POST" })

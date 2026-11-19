@@ -1,11 +1,12 @@
-import { o as __toESM, r as __exportAll } from "../_runtime.mjs";
+import { o as __toESM } from "../_runtime.mjs";
+import { t as __exportAll } from "./rolldown-runtime-D8jQpDG7.mjs";
 import { L as string, N as number, P as object, R as union, j as literal } from "../_libs/@better-auth/core+[...].mjs";
-import { i as getSql, t as dbSource } from "./db-OMgi1bGZ.mjs";
-import { n as auth } from "./server-jAP-ez_Y.mjs";
-import { Ut as require_react, _ as createRootRoute, b as useRouter, d as HeadContent, g as createFileRoute, h as lazyRouteComponent, m as Outlet, p as createRouter, u as Scripts, x as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
+import { a as getServerFnById, i as TSS_SERVER_FUNCTION, n as createMiddleware, r as createServerFn } from "./ssr.mjs";
+import { a as getSql, n as dbSource, t as authMiddleware } from "./middleware-CGXLX9m3.mjs";
+import { n as auth } from "./server-BfTlBDHy.mjs";
+import { Ut as require_react, _ as createRootRoute, b as useRouter, d as HeadContent, g as createFileRoute, h as lazyRouteComponent, m as Outlet, p as createRouter, u as Scripts, v as Link, x as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as TriangleAlert } from "../_libs/lucide-react.mjs";
-// node_modules/.nitro/vite/services/ssr/assets/router-B3k0NA1_.js
-var router_B3k0NA1__exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
+// node_modules/.nitro/vite/services/ssr/assets/router-DOmvwcbQ.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var FALLBACK_MESSAGE = "An unexpected error occurred. Try reloading the page.";
@@ -333,7 +334,98 @@ function PreviewHostBridge() {
 	}, [router]);
 	return null;
 }
-var styles_default = "/assets/styles-BdKEE7Fs.css";
+var createSsrRpc = (functionId) => {
+	const url = "/_serverFn/" + functionId;
+	const serverFnMeta = { id: functionId };
+	const fn = async (...args) => {
+		return (await getServerFnById(functionId, { origin: "server" }))(...args);
+	};
+	return Object.assign(fn, {
+		url,
+		serverFnMeta,
+		[TSS_SERVER_FUNCTION]: true
+	});
+};
+var optionalAuth = createMiddleware({ type: "function" }).client(async ({ next }) => {
+	const { getBearerToken } = await import("./client-Bjfx2ad2.mjs").then((n) => n.n).then((n) => n.n);
+	return next({ sendContext: { bearerToken: getBearerToken() ?? void 0 } });
+}).server(async ({ next, context }) => {
+	const { getSessionUser } = await import("./verify.server-DBMwgunI.mjs");
+	return next({ context: { userId: (await getSessionUser(context.bearerToken))?.id ?? null } });
+});
+var getJournal = createServerFn({ method: "GET" }).middleware([optionalAuth]).handler(createSsrRpc("e82c2360d3b9e2a68b6cd566daed811df0847e0801e7aa853e828ac80de9f6fb"));
+var listPosts = createServerFn({ method: "GET" }).middleware([optionalAuth]).handler(createSsrRpc("d0a5f87e3d7cc9b630698a100633894cc6e971e70c7341fb6c45c2fbb2e994db"));
+createServerFn({ method: "GET" }).middleware([optionalAuth]).handler(createSsrRpc("135d68d34606ddf2549bfc89f9bddf6abc75904db647617c10888e5e25ac4056"));
+var getVlogFeed = createServerFn({ method: "GET" }).middleware([optionalAuth]).handler(createSsrRpc("cba6d29231659ff4fd8b5295360b79af4485edf7d6ecf98cf144a54a0bea2313"));
+var claimJournal = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator((input) => input).handler(createSsrRpc("b01d2dfac8f18ca68c6f26e2c10ab88d7ff837c94d4763cb8d15147afd2e5221"));
+var updateJournalSettings = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("8a2b46fd8840f7c060a3c3e256a0fc56458456a6b21214ea7950403b5840cc11"));
+var checkKey = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("88866644aa23515aadac4a7ae978f8e47e267033a40fa42ca59498325ea4b74f"));
+var createDive = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("8d3d3b997a058765dfc34f3de5740cebba35a271e12dcf0c0e443b184dcacf39"));
+var createAuthorizedPost = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator((input) => input).handler(createSsrRpc("9472411d6230af2f63704130cc1b52adaaa298471de40c682b9efc1b6f70648b"));
+var removeDive = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("dd4e887a115efb99e5c85ffbbe12a8a797f61553c285322343af6a942be42ad4"));
+var likePost = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("6aba6890efff2bd02e208283ef6f209ac2e3133e759961ac4a2caf72079e0fb7"));
+var deletePost = createServerFn({ method: "POST" }).middleware([authMiddleware]).validator((input) => input).handler(createSsrRpc("b3e014de302bfec110f1a51a55d57ae3fde11eff8124b75cafd0c74b15fb0bbf"));
+var addComment = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("d4305bc35c8ad691da55e882b5b3a8180da8757a5becdb43eaaeace951e86837"));
+var removeComment = createServerFn({ method: "POST" }).middleware([optionalAuth]).validator((input) => input).handler(createSsrRpc("c06e2babf521222499d2399b9835f95f3a5bc65560def47cfa1c8396d4d55545"));
+function VlogHeader() {
+	const [journal, setJournal] = (0, import_react.useState)(null);
+	(0, import_react.useEffect)(() => {
+		getJournal().then((info) => setJournal(info)).catch(() => {});
+	}, []);
+	const myName = journal?.myName ?? "Me";
+	const sisterName = journal?.sisterName ?? "Sis";
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("header", {
+		className: "border-b border-ink/10 bg-card/60 backdrop-blur-md sticky top-0 z-30",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 py-3 sm:py-4",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex items-center gap-3",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "flex h-10 w-10 items-center justify-center rounded-2xl bg-fern text-card font-display text-lg font-bold shadow-sm",
+					children: myName[0] ?? "D"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/",
+						className: "font-display text-xl font-bold tracking-tight text-ink hover:text-fern",
+						children: "Daily Dive"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "rounded-full bg-sap/70 px-2.5 py-0.5 text-xs font-semibold text-ink",
+						children: "Personal Vlog"
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+					className: "text-xs text-ink/70",
+					children: [
+						myName,
+						" & ",
+						sisterName,
+						"'s shared space for paintings, guitar riffs, and daily reflections."
+					]
+				})] })]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("nav", {
+				className: "flex flex-wrap items-center gap-2 text-sm font-medium",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/",
+						className: "rounded-full px-3 py-1.5 transition hover:bg-fern/10 text-ink",
+						children: "Vlog"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/post",
+						className: "rounded-full px-3 py-1.5 transition hover:bg-fern/10 text-ink",
+						children: "Studio / Post"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/login",
+						className: "rounded-full bg-fern px-4 py-1.5 text-card transition hover:opacity-90",
+						children: "Sign in"
+					})
+				]
+			})]
+		})
+	});
+}
+var styles_default = "/assets/styles-CsFED27m.css";
 var APP_NAME = "Daily Dive";
 var Route$5 = createRootRoute({
 	head: () => ({
@@ -392,25 +484,29 @@ var Route$5 = createRootRoute({
 		suppressHydrationWarning: true,
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("head", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HeadContent, {}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("body", { children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewHostBridge, {}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AuthProvider, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {}) }),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(AuthProvider, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(VlogHeader, {}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {})] }),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Scripts, {})
 		] })]
 	})
 });
-var $$splitComponentImporter$2 = () => import("./routes-CqbKtiiS.mjs");
+var $$splitComponentImporter$2 = () => import("./routes-Ckfao9Cl.mjs");
 var Route$4 = createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter$2, "component") });
-var $$splitComponentImporter$1 = () => import("./login-Dx8SlKHN.mjs");
+var $$splitComponentImporter$1 = () => import("./login-YTnMf5Ew.mjs");
 var Route$3 = createFileRoute("/login")({ component: lazyRouteComponent($$splitComponentImporter$1, "component") });
-var $$splitComponentImporter = () => import("./post-BpVm24Uq.mjs");
+var $$splitComponentImporter = () => import("./post-Bk7W0Mfh.mjs");
 var Route$2 = createFileRoute("/post")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
 var Route$1 = createFileRoute("/api/health")({ server: { handlers: { GET: async () => {
 	const started = Date.now();
+	const rawDbUrl = process.env.DATABASE_URL?.trim().replace(/^["']|["']$/g, "");
+	const rawUnpooledUrl = process.env.DATABASE_URL_UNPOOLED?.trim().replace(/^["']|["']$/g, "");
 	const envStatus = {
-		DATABASE_URL: Boolean(process.env.DATABASE_URL?.trim()),
-		DATABASE_URL_UNPOOLED: Boolean(process.env.DATABASE_URL_UNPOOLED?.trim()),
+		DATABASE_URL: Boolean(rawDbUrl),
+		DATABASE_URL_UNPOOLED: Boolean(rawUnpooledUrl),
 		BETTER_AUTH_URL: Boolean(process.env.BETTER_AUTH_URL?.trim()),
 		BETTER_AUTH_SECRET: Boolean(process.env.BETTER_AUTH_SECRET?.trim()),
-		VITE_AUTH_ENABLED: process.env.VITE_AUTH_ENABLED ?? "true"
+		VITE_AUTH_ENABLED: process.env.VITE_AUTH_ENABLED ?? "true",
+		NODE_ENV: "production",
+		VERCEL: Boolean(process.env.VERCEL)
 	};
 	try {
 		const sql = await getSql();
@@ -470,6 +566,7 @@ var rootRouteChildren = {
 	})
 };
 var routeTree = Route$5._addFileChildren(rootRouteChildren)._addFileTypes();
+var router_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
 function getRouter() {
 	return createRouter({
 		routeTree,
@@ -477,4 +574,4 @@ function getRouter() {
 		defaultErrorComponent: AppErrorComponent
 	});
 }
-export { getRouter, router_B3k0NA1__exports as t };
+export { createAuthorizedPost as a, getJournal as c, listPosts as d, removeComment as f, claimJournal as i, getVlogFeed as l, updateJournalSettings as m, addComment as n, createDive as o, removeDive as p, checkKey as r, deletePost as s, router_exports as t, likePost as u };

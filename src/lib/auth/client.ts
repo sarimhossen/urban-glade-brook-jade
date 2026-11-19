@@ -17,7 +17,20 @@ import { GROK_PROVIDERS } from "./providers";
  * leaves the bearer token in place, and `onRequest` keeps re-attaching it, so
  * the visitor stays signed in.
  */
+const ssrSafeBaseURL =
+  typeof window === "undefined"
+    ? (() => {
+        const raw =
+          typeof process !== "undefined"
+            ? process.env.BETTER_AUTH_URL?.trim().replace(/^["']|["']$/g, "")
+            : undefined;
+        if (!raw) return "http://localhost:3000";
+        return (/^https?:\/\//i.test(raw) ? raw : `https://${raw}`).replace(/\/+$/, "");
+      })()
+    : undefined;
+
 export const authClient = createAuthClient({
+  ...(ssrSafeBaseURL ? { baseURL: ssrSafeBaseURL } : {}),
   plugins: [genericOAuthClient()],
   fetchOptions: {
     onRequest(ctx) {

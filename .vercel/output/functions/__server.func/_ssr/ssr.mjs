@@ -533,7 +533,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v--QJ4kMs8.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-CZ3cedIY.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -555,43 +555,59 @@ async function getStartManifest(matchedRoutes) {
 var manifest = {
 	"135d68d34606ddf2549bfc89f9bddf6abc75904db647617c10888e5e25ac4056": {
 		functionName: "listDives_createServerFn_handler",
-		importer: () => import("./journal-C8nc7OsH.mjs")
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
+	},
+	"6aba6890efff2bd02e208283ef6f209ac2e3133e759961ac4a2caf72079e0fb7": {
+		functionName: "likePost_createServerFn_handler",
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
 	},
 	"88866644aa23515aadac4a7ae978f8e47e267033a40fa42ca59498325ea4b74f": {
 		functionName: "checkKey_createServerFn_handler",
-		importer: () => import("./journal-C8nc7OsH.mjs")
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
 	},
 	"8a2b46fd8840f7c060a3c3e256a0fc56458456a6b21214ea7950403b5840cc11": {
 		functionName: "updateJournalSettings_createServerFn_handler",
-		importer: () => import("./journal-C8nc7OsH.mjs")
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
 	},
 	"8d3d3b997a058765dfc34f3de5740cebba35a271e12dcf0c0e443b184dcacf39": {
 		functionName: "createDive_createServerFn_handler",
-		importer: () => import("./journal-C8nc7OsH.mjs")
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
+	},
+	"9472411d6230af2f63704130cc1b52adaaa298471de40c682b9efc1b6f70648b": {
+		functionName: "createAuthorizedPost_createServerFn_handler",
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
 	},
 	"b01d2dfac8f18ca68c6f26e2c10ab88d7ff837c94d4763cb8d15147afd2e5221": {
 		functionName: "claimJournal_createServerFn_handler",
-		importer: () => import("./journal-C8nc7OsH.mjs")
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
+	},
+	"b3e014de302bfec110f1a51a55d57ae3fde11eff8124b75cafd0c74b15fb0bbf": {
+		functionName: "deletePost_createServerFn_handler",
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
 	},
 	"c06e2babf521222499d2399b9835f95f3a5bc65560def47cfa1c8396d4d55545": {
 		functionName: "removeComment_createServerFn_handler",
-		importer: () => import("./journal-C8nc7OsH.mjs")
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
 	},
 	"cba6d29231659ff4fd8b5295360b79af4485edf7d6ecf98cf144a54a0bea2313": {
 		functionName: "getVlogFeed_createServerFn_handler",
-		importer: () => import("./journal-C8nc7OsH.mjs")
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
+	},
+	"d0a5f87e3d7cc9b630698a100633894cc6e971e70c7341fb6c45c2fbb2e994db": {
+		functionName: "listPosts_createServerFn_handler",
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
 	},
 	"d4305bc35c8ad691da55e882b5b3a8180da8757a5becdb43eaaeace951e86837": {
 		functionName: "addComment_createServerFn_handler",
-		importer: () => import("./journal-C8nc7OsH.mjs")
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
 	},
 	"dd4e887a115efb99e5c85ffbbe12a8a797f61553c285322343af6a942be42ad4": {
 		functionName: "removeDive_createServerFn_handler",
-		importer: () => import("./journal-C8nc7OsH.mjs")
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
 	},
 	"e82c2360d3b9e2a68b6cd566daed811df0847e0801e7aa853e828ac80de9f6fb": {
 		functionName: "getJournal_createServerFn_handler",
-		importer: () => import("./journal-C8nc7OsH.mjs")
+		importer: () => import("./journal-Dxwl1Sf9.mjs")
 	}
 };
 async function getServerFnById(id, access) {
@@ -2077,7 +2093,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-B3k0NA1_.mjs").then((n) => n.t),
+		import("./router-DOmvwcbQ.mjs").then((n) => n.t),
 		import("./start-COmmreO7.mjs"),
 		import("./empty-plugin-adapters-CeyhLWeJ.mjs")
 	]);

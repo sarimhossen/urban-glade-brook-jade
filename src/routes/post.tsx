@@ -1,7 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { NewPostForm } from "@/components/new-post-form";
 import { PaintNook } from "@/components/paint-nook";
 import { PostDock } from "@/components/post-dock";
+import { PostList } from "@/components/post-list";
 import { SplatRun } from "@/components/splat-run";
 import { StringBench } from "@/components/string-bench";
 import { UserButton } from "@/lib/auth/gates";
@@ -24,7 +26,7 @@ export const Route = createFileRoute("/post")({ component: PostPage });
 const KEY = "daily-dive.familyKey";
 const VOICE_KEY = "daily-dive.voice";
 
-type StudioTab = "write" | "paint" | "strings" | "play";
+type StudioTab = "quick" | "write" | "paint" | "strings" | "play";
 
 function textOf(err: unknown) {
   return err instanceof Error && err.message ? err.message : "Something went wrong. Try again.";
@@ -33,10 +35,10 @@ function textOf(err: unknown) {
 function PostPage() {
   const navigate = useNavigate();
   const { user, isPending } = useCurrentUserState();
-  const [tab, setTab] = useState<StudioTab>("write");
+  const [tab, setTab] = useState<StudioTab>("quick");
   const [journal, setJournal] = useState<JournalInfo | null>(null);
   const [familyKey, setFamilyKey] = useState<string | null>(null);
-  const [voice, setVoice] = useState<Voice>("me");
+  const [voice, setVoice] = useState<"me" | "sis">("me");
   const [prompt, setPrompt] = useState("What did today feel like?");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,8 +77,8 @@ function PostPage() {
   }
 
   function pickVoice(next: Voice) {
-    setVoice(next);
     if (next === "me" || next === "sis") {
+      setVoice(next);
       localStorage.setItem(VOICE_KEY, next);
     }
   }
@@ -120,7 +122,7 @@ function PostPage() {
     }
   }
 
-  const canFamilyPost = Boolean(journal?.ready && familyKey);
+  const canFamilyPost = Boolean(journal?.ready && (familyKey || (user && journal.isOwner)));
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-5 sm:py-8">
@@ -200,6 +202,7 @@ function PostPage() {
           <div className="flex flex-wrap gap-2">
             {(
               [
+                ["quick", "New post"],
                 ["write", "Note & media"],
                 ["paint", "Paint nook"],
                 ["strings", "String bench"],
@@ -217,6 +220,20 @@ function PostPage() {
             ))}
           </div>
 
+          {tab === "quick" && (
+            <NewPostForm
+              journal={journal}
+              familyKey={familyKey}
+              voice={voice}
+              onVoice={pickVoice}
+              onUnlockKey={rememberKey}
+              onPublished={() => {
+                setNotice("Published to the vlog!");
+                void navigate({ to: "/" });
+              }}
+            />
+          )}
+
           {tab === "write" && (
             <PostDock
               myName={journal.myName}
@@ -224,10 +241,20 @@ function PostPage() {
               allowGuestPosts={journal.allowGuestPosts}
               voice={voice}
               onVoice={pickVoice}
-              mode="open"
+              mode={familyKey ? "open" : "enter"}
               busy={busy}
               onClaim={async () => {}}
-              onUnlock={async () => {}}
+              onUnlock={async (key) => {
+                setBusy(true);
+                setError(null);
+                try {
+                  await checkKey({ data: { familyKey: key } });
+                  rememberKey(key.trim());
+                  setNotice("Family posting is unlocked on this device.");
+                } finally {
+                  setBusy(false);
+                }
+              }}
               onUpdateSettings={async (settings) => {
                 if (!familyKey) return;
                 setBusy(true);
@@ -250,7 +277,7 @@ function PostPage() {
               <h2 className="font-display text-3xl">Paint nook</h2>
               <p className="mt-1 mb-3 text-sm text-ink/70">{prompt}</p>
               <PaintNook
-                canSave={canFamilyPost}
+                canSave={Boolean(familyKey)}
                 busy={busy}
                 onSave={(media) =>
                   void submitFamilyDive({
@@ -271,7 +298,7 @@ function PostPage() {
               <h2 className="font-display text-3xl">String bench</h2>
               <p className="mt-1 mb-3 text-sm text-ink/70">Open strings, like a guitar you don't have to tune.</p>
               <StringBench
-                canSave={canFamilyPost}
+                canSave={Boolean(familyKey)}
                 busy={busy}
                 onSave={(hits) =>
                   void submitFamilyDive({
@@ -292,7 +319,7 @@ function PostPage() {
               <h2 className="font-display text-3xl">Splat run</h2>
               <p className="mt-1 mb-3 text-sm text-ink/70">Drag the pick, or use the buttons.</p>
               <SplatRun
-                canSave={canFamilyPost}
+                canSave={Boolean(familyKey)}
                 busy={busy}
                 onSave={(score) =>
                   void submitFamilyDive({
@@ -310,28 +337,16 @@ function PostPage() {
         </div>
       ) : (
         <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <PostDock
-            myName={journal.myName}
-            sisterName={journal.sisterName}
-            allowGuestPosts={journal.allowGuestPosts}
+          <NewPostForm
+            journal={journal}
+            familyKey={familyKey}
             voice={voice}
             onVoice={pickVoice}
-            mode="enter"
-            busy={busy}
-            onClaim={async () => {}}
-            onUnlock={async (key) => {
-              setBusy(true);
-              setError(null);
-              try {
-                await checkKey({ data: { familyKey: key } });
-                rememberKey(key.trim());
-                setNotice("Family posting is unlocked on this device.");
-              } finally {
-                setBusy(false);
-              }
+            onUnlockKey={rememberKey}
+            onPublished={() => {
+              setNotice("Published to the vlog!");
+              void navigate({ to: "/" });
             }}
-            onUpdateSettings={async () => {}}
-            onCreate={async () => false}
           />
 
           {journal.allowGuestPosts ? (
@@ -378,6 +393,9 @@ function PostPage() {
           )}
         </div>
       )}
+      <div className="mt-8">
+        <PostList isOwner={journal?.isOwner} />
+      </div>
     </main>
   );
 }
